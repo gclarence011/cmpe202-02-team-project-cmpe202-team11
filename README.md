@@ -2,3 +2,8 @@
 
 Scrum Manager
 - https://docs.google.com/spreadsheets/d/1HfVKEmBjztNtblDBRnfNRHagL97_EXRULnCIfn5pPmA/edit?gid=1742583490#gid=1742583490
+
+Prereqs:
+- Node.js & npm
+- Java
+- Maven

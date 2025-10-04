@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
   @GetMapping("/api/hello")
   public Message hello() {
-    return new Message("Hello, World!");
+    return new Message("Backend is running");
   }
 
   static class Message {

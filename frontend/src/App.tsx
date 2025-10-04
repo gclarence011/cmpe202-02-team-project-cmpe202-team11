@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 /**
  * Campus Marketplace – Lo‑Fi Wireframe (Single‑file React)
@@ -43,11 +43,20 @@ function Header({
   setScreen: (s: (typeof SCREENS)[number]) => void;
   role: "Buyer" | "Seller" | "Admin";
   setRole: (r: "Buyer" | "Seller" | "Admin") => void;
-}) {
+  
+}) 
+{
+  const [message, setMessage] = useState("loading...");
+  useEffect(() => {
+    fetch("http://localhost:8080/api/hello")
+      .then(res => res.json())
+      .then(data => setMessage(data.text))
+      .catch(() => setMessage("Error"));
+  }, []);
   return (
     <div className="sticky top-0 z-10 border-b border-neutral-200 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
-        <div className="font-semibold tracking-wide">Campus Marketplace (Wireframe)</div>
+        <div className="font-semibold tracking-wide">Campus Marketplace (Wireframe)<br />{message}</div>
         <div className="ml-auto flex items-center gap-2">
           <select
             className="border rounded-md px-2 py-1 text-sm"

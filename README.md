@@ -3,27 +3,95 @@
 Scrum Manager
 - https://docs.google.com/spreadsheets/d/1HfVKEmBjztNtblDBRnfNRHagL97_EXRULnCIfn5pPmA/edit?gid=1742583490#gid=1742583490
 
-Prereqs
-- Node.js & npm
-- Java
-- Maven
+# How to run the app:
+# Backend
+Prerequisites  
+1. Java JDK  
+```bash
+  java -version
+```
+2. Maven
+```bash
+  mvn -v
+```
 
+Steps to Run  
+1. Clone the repo
+```bash
+  git clone https://github.com/gopinathsjsu/cmpe202-02-team-project-cmpe202-team11.git
+  cd cmpe202-02-team-project-cmpe202-team11
+```
+2. Configure Application Properties (TBD - need to integrate with AWS Postgress)  
+   a. Open src/main/resources/application.properties  
+   b. Set db connection and other environment
+3. Go to Backend Folder
+```bash
+	cd backend
+```
+5. Build the Project
+```bash
+	mvn clean install
+```
+5. Run the Backend
+```bash
+	mvn spring-boot:run
+```
+6. Check Backend  
+   a. It should run at http://localhost:8080.
+   
+# Frontend
+Prerequisites  
+1. Node.js
+```bash
+  node -v
+```
+2. npm
+```bash
+  npm -v
+```
+
+Steps to Run  
+1. Clone the repo (if you have not)
+```bash
+  git clone https://github.com/gopinathsjsu/cmpe202-02-team-project-cmpe202-team11.git
+  cd cmpe202-02-team-project-cmpe202-team11
+```
+2. Go to Frontend Folder
+```bash
+	cd frontend
+```
+3. Install Dependencies
+```bash
+	npm install
+```
+4. Run the Frontend
+```bash
+	npm run dev
+```
+5. Check Backend  
+   a. It should run at [http://localhost:5173.](http://localhost:5173/)
+   
+
+# Docker
 How to Run the Docker-Compose File  
 
 These instructions will guide you through running your application using Docker Compose.  
 
 Prerequisites  
-	1.	Docker: Make sure Docker is installed on your system.   
-    You can download it [here](https://www.docker.com/get-started).  
+	1.	Docker: Make sure Docker is installed on your system. You can download it [here](https://www.docker.com/get-started).  
 	2.	Docker Compose: Ensure Docker Compose is installed (Docker Desktop usually includes it). Check by running:  
   ```bash
   docker-compose --version
   ```
 
 Steps to Run  
-	1.	Go to the project root file (where the Docker-Compose.yml is located)  
+  1.	Go to the project root file (where the Docker-Compose.yml is located)  
   2. Build and Start Containers  
 Run the following command to build (if needed) and start your containers:  
   ```
   docker-compose up --build
   ```
+  3. Check frontend and backend  
+     a. Frontend: http://localhost:3000.  
+     b. Backend: http://localhost:8080.
+

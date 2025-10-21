@@ -31,25 +31,26 @@ public class ListingController {
   
   @GetMapping("api/listings/hello")// for testing 
   public String hello(){
-    String result = listingService.hello() + System.lineSeparator() + userService.hello(); // Need to fix)
+    String result = listingService.hello() + System.lineSeparator() + userService.hello();
     return result;
   }
 
   // Create Listing
   @PostMapping("api/listings/create")
-  public ResponseEntity<String> createListing(@RequestBody Listing listing){
-    Long userId = 1L; // get from JWT
+  public ResponseEntity<String> createListing(){
+    Long userId = 3L; // get from JWT
     try {
-        listingService.createListing(listing, userId);
+        listingService.createListing(userId);
         return ResponseEntity.status(201).body("Listing created successfully");
     } catch (IllegalArgumentException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     } catch (Exception e) {
-        return ResponseEntity.internalServerError().body("An unexpected error occurred");
+        return ResponseEntity.internalServerError().body("An unexpected error occurred" + e.getMessage());
     }
   }
 
   // Get Listing
+    // Get list of listings from a search
   @GetMapping("api/listings/search")
   public ResponseEntity<?> getListings(@RequestParam String keyWord, Category category){
     Long userID = 1L; // from auth JWT
@@ -59,10 +60,10 @@ public class ListingController {
     } catch (IllegalArgumentException e) { // if no listing is found
         return ResponseEntity.badRequest().body(e.getMessage());
     } catch (Exception e) {
-        return ResponseEntity.internalServerError().body("An unexpected error occurred");
+        return ResponseEntity.internalServerError().body("An unexpected error occurred" + e.getMessage());
     }
   }
-
+    // Get specific listing
   @GetMapping("api/listings/{listingId}")
   public ResponseEntity<?> getListing(@PathVariable Long listingId){
     Listing listing;
@@ -72,32 +73,52 @@ public class ListingController {
     } catch (IllegalArgumentException e) { // if no listing is found
         return ResponseEntity.badRequest().body(e.getMessage());
     } catch (Exception e) {
-        return ResponseEntity.internalServerError().body("An unexpected error occurred");
+        return ResponseEntity.internalServerError().body("An unexpected error occurred" + e.getMessage());
     }
   }
 
-  // Update Listing
+  // Update Listing information
   @PatchMapping("api/listings/{listingId}") 
-  public ResponseEntity<Listing> updateListing(
+  public ResponseEntity<?> updateListing(
                                   @PathVariable Long listingId, 
                                   @RequestBody Map<String, Object> updates){
     Long userId = 1l; //get from JWT
-    Listing listing = listingService.updateListing(listingId, updates, userId);
-    return ResponseEntity.ok(listing);
+    try {
+      Listing listing = listingService.updateListing(listingId, updates, userId);
+      return ResponseEntity.status(201).body(listing);
+    } catch (IllegalArgumentException e){
+        return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().body("An unexpected error occured" + e.getMessage());
+    }
+    
   }
-
-  @PatchMapping("api/listings/{id}/flag")
-  public ResponseEntity<Listing> flagListing(Long listingID){
+  // Flag Listings
+  @PatchMapping("api/listings/{listingID}/flag")
+  public ResponseEntity<?> flagListing(@PathVariable Long listingID){
     Long adminId = 1L; // get from JWT
-    Listing listing = listingService.flagListing(listingID, adminId);
-    return ResponseEntity.ok(listing);
+    try{
+      Listing listing = listingService.flagListing(listingID, adminId);
+      return ResponseEntity.status(201).body(listing);
+    } catch (IllegalArgumentException e){
+        return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e){
+        return ResponseEntity.internalServerError().body("An unexpected error occured" + e.getMessage());
+    }
   }
 
   // Delete Listing
-  @DeleteMapping("api/listings/delete/:id")
-  public void deleteListing(Long listingID){
-    Long userId = 1l; // get rom JWT
-    listingService.deleteListing(listingID, userId);
+  @DeleteMapping("api/listings/delete/{listingID}")
+  public ResponseEntity<String> deleteListing(@PathVariable Long listingID){
+    try{
+      Long userId = 1l; // get rom JWT
+      listingService.deleteListing(listingID, userId);
+      return ResponseEntity.status(201).body("Deleted Succesfully");
+    } catch (IllegalArgumentException e){
+        return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e){
+        return ResponseEntity.internalServerError().body("An unexpected error occured" + e.getMessage());
+    }
   }
   
 }

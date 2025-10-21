@@ -1,6 +1,6 @@
-com/backend/config/CorsConfig.class
 com/backend/controller/HelloController$Message.class
 com/backend/config/CorsConfig$1.class
 com/backend/controller/HelloController.class
-com/backend/controller/ListingController.class
 com/backend/BackendApplication.class
+com/backend/config/CorsConfig.class
+com/backend/controller/ListingController.class

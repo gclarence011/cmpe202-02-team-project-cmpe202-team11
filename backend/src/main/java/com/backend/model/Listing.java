@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.ArrayList;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "listings")
@@ -15,7 +14,7 @@ public class Listing {
 
   private String title;
   private String description;
-  @Positive(message = "Price must be positive")
+  @PositiveOrZero(message = "Price must be positive")
   private double price;
   private List<String> photos = new ArrayList<>();
   @Enumerated(EnumType.STRING)

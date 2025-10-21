@@ -2,7 +2,6 @@
 /Users/gabriel/Documents/School/202 Project/cmpe202-02-team-project-cmpe202-team11/backend/src/main/java/com/backend/config/CorsConfig.java
 /Users/gabriel/Documents/School/202 Project/cmpe202-02-team-project-cmpe202-team11/backend/src/main/java/com/backend/controller/HelloController.java
 /Users/gabriel/Documents/School/202 Project/cmpe202-02-team-project-cmpe202-team11/backend/src/main/java/com/backend/controller/ListingController.java
-/Users/gabriel/Documents/School/202 Project/cmpe202-02-team-project-cmpe202-team11/backend/src/main/java/com/backend/dto/ListingDTO.java
 /Users/gabriel/Documents/School/202 Project/cmpe202-02-team-project-cmpe202-team11/backend/src/main/java/com/backend/dto/ListingsResult.java
 /Users/gabriel/Documents/School/202 Project/cmpe202-02-team-project-cmpe202-team11/backend/src/main/java/com/backend/model/Category.java
 /Users/gabriel/Documents/School/202 Project/cmpe202-02-team-project-cmpe202-team11/backend/src/main/java/com/backend/model/Listing.java

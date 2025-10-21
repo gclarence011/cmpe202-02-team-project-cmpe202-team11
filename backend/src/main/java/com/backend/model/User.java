@@ -1,11 +1,6 @@
 package com.backend.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-
-import java.util.ArrayList;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "users")
@@ -23,7 +18,6 @@ public class User {
     this.name = name;
     this.email = email;
     this.role = Role.USER;
-
   }
 
   public User(){

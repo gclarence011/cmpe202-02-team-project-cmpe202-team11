@@ -18,6 +18,7 @@ import com.backend.dto.ListingsResult;
 
 @Service
 public class ListingService {
+  // Initializiations 
   private final ListingRepository listingRepository;
   private final UserRepository userRepository;
 
@@ -30,16 +31,14 @@ public class ListingService {
     return new String("Listing Serivces says hello!");
   }
 
-  // create listing
-  public void createListing(Listing listing, Long userId){
-    // Checks if listing is not empty
-    if (listing == null){
-      throw new IllegalArgumentException ("Listing cannot be empty");
-    }
+  // Create listing
+  public void createListing(Long userId){
     // Get the user creating the listing 
     User seller = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException( "User not found"));
-    // Set the seller and save into database
+    Listing listing = new Listing();
+    // Set the seller 
     listing.setSeller(seller);
+    // Save into database
     try{
       listingRepository.save(listing);
       System.out.println("Creating listing" + listing.getTitle()); // comments
@@ -50,7 +49,7 @@ public class ListingService {
     }
   }
 
-  // read listing
+  // Get Listing from ID
   public Listing getListing(Long id){
     Listing listing;
     try{
@@ -70,26 +69,27 @@ public class ListingService {
     return listingsResult;
   }
 
-  // update listing (Check URL????)
+  // update listing (Does not check if Photo URL is valid)
     // individual listing
   public Listing updateListing(Long listingId, Map<String, Object> updates, Long userId){
-    Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new RuntimeException("Listing not found"));
-    
-    // update
+    Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
+    User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    // Make sure that the user is the seller of the listing
+    if (listing.getSeller() != user) { 
+      throw new IllegalArgumentException("User is not the seller");
+    }
+    // Update listing
     if (updates.containsKey("title")){
       listing.setTitle((String) updates.get("title"));
-
-      System.err.println("title change");
     }
     if (updates.containsKey("description")){
-      System.err.println("description change");
       listing.setDescription((String) updates.get("description"));
     }
     if (updates.containsKey("price")){
       try {
         listing.setPrice(Double.valueOf(updates.get("price").toString()));
       }catch (NumberFormatException e) {
-        throw new RuntimeException("Invalid price format");
+        throw new IllegalArgumentException("Invalid price format");
       }
     }
     if (updates.containsKey("photos")){
@@ -99,7 +99,7 @@ public class ListingService {
         List<String> photoList = rawlist.stream().map(Object::toString).toList();
         listing.setPhotos(photoList);
       } else {
-        throw new RuntimeException("Invalid photo format");
+        throw new IllegalArgumentException("Invalid photo format");
       }
     }
     if (updates.containsKey("category")){
@@ -107,7 +107,7 @@ public class ListingService {
       try {
         listing.setCategory(Category.valueOf(categoryName.toUpperCase()));
       }catch (IllegalArgumentException e) {
-        throw new RuntimeException("Invalid Catergory" + categoryName);
+        throw new IllegalArgumentException("Invalid Catergory" + categoryName);
       }
     }
     if (updates.containsKey("status")){
@@ -115,29 +115,28 @@ public class ListingService {
       try {
         listing.setStatus(Status.valueOf(status.toUpperCase()));
       }catch (IllegalArgumentException e) {
-        throw new RuntimeException("Invalid Status" + status);
+        throw new IllegalArgumentException("Invalid Status" + status);
       }
     }
     return listingRepository.save(listing);
   }
 
-  // remove listing
-    // individual listing
+  // Remove Listing
   public void deleteListing(Long listingID, Long userId){
     Listing listing = listingRepository.findById(listingID).orElseThrow(() -> new RuntimeException("Listing not found"));
     User user = userRepository.findById(userId).orElse(null);
     if (listing.getSeller() != user) {
-      throw new RuntimeException(" Listing Seller can flag");
+      throw new IllegalArgumentException("Only Listing Seller can delete");
     }
     listingRepository.delete(listing);
   }
 
-  // flag listing
+  // Flag listing
   public Listing flagListing(Long listingId, Long adminId){
     Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new RuntimeException("Listing not found"));
     User admin = userRepository.findById(adminId).orElse(null);
     if (admin.getRole() != Role.ADMIN){
-      throw new RuntimeException("Only Admin can flag");
+      throw new IllegalArgumentException("Only Admin can flag");
     }
     listing.setStatus(Status.FLAGED);
 

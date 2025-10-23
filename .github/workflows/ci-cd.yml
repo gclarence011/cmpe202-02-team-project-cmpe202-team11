@@ -2,9 +2,13 @@ name: Full CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: 
+    - main
+    - ci-test
   pull_request:
-    branches: [ main ]
+    branches: 
+    - main
+    - ci-test
 
 jobs:
   build-test-deploy:
@@ -15,8 +19,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Check secret
+        run: |
+          if [ -z "${{ secrets.DB_USERNAME }}" ]; then
+            echo "Secret not set"
+            exit 1 
+          else
+            echo "Secret is available"
+          fi
+
       # 2. Run tests
       - name: Run tests
+        working-directory: backend
         run: mvn test
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://market-place-database.chakkagimn20.us-east-2.rds.amazonaws.com:5432/marketplacedb

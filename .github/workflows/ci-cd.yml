@@ -19,6 +19,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Check secret
+        run: |
+          if [ -z "${{ secrets.MY_SECRET }}" ]; then
+            echo "Secret not set"
+          else
+            echo "Secret is available"
+          fi
+
       # 2. Run tests
       - name: Run tests
         working-directory: backend

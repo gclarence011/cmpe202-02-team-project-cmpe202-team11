@@ -18,7 +18,7 @@ jobs:
       # 1. Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
-
+      # 2. Chekc if secret is set
       - name: Check secret
         run: |
           if [ -z "${{ secrets.DB_USERNAME }}" ]; then
@@ -28,7 +28,7 @@ jobs:
             echo "Secret is available"
           fi
 
-      # 2. Run tests
+      # 3. Run tests
       - name: Run tests
         working-directory: backend
         run: mvn test
@@ -38,11 +38,11 @@ jobs:
           SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
           SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
-      # 3. Set up Docker Buildx (for building images)
+      # 4. Set up Docker Buildx (for building images)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 4. Build and run Docker Compose services
+      # 5. Build and run Docker Compose services
       - name: Build and run services
         run: |
           docker compose -f docker-compose.yml build

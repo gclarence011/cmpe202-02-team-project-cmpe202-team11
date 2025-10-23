@@ -21,8 +21,9 @@ jobs:
 
       - name: Check secret
         run: |
-          if [ -z "${{ secrets.MY_SECRET }}" ]; then
+          if [ -z "${{ secrets.DB_USERNAME }}" ]; then
             echo "Secret not set"
+            exit 1 
           else
             echo "Secret is available"
           fi

@@ -2,6 +2,8 @@ package com.backend.model;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListingTest {
@@ -29,11 +31,27 @@ public class ListingTest {
 
     @Test
     void testSetters() {
+        User user = new User();
         Listing listing = new Listing();
+        List<String> photos = new ArrayList<>();
+        photos.add("test.jpg");
+        photos.add("test2.jpg");
+        Category category  = Category.ELECTRONICS;
+        
+        
         listing.setTitle("Phone");
         listing.setPrice(500.0);
+        listing.setDescription("This is for testing");
+        listing.setPhotos(photos);
+        listing.setCategory(category);
+        listing.setSeller(user);
 
         assertEquals("Phone", listing.getTitle());
         assertEquals(500.0, listing.getPrice());
+        assertEquals("This is for testing", listing.getDescription());
+        assertEquals(photos, listing.getPhotos());
+        assertEquals(category, listing.getCategory());
+        assertEquals(user, listing.getSeller());
+        assertEquals(Status.DRAFT, listing.getStatus());
     }
 }

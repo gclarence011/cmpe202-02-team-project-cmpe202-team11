@@ -37,11 +37,11 @@ public class ListingController {
 
   // Create Listing
   @PostMapping("api/listings/create")
-  public ResponseEntity<String> createListing(){
-    Long userId = 3L; // get from JWT
+  public ResponseEntity<?> createListing(){
+    Long userId = 1L; // get from JWT
     try {
-        listingService.createListing(userId);
-        return ResponseEntity.status(201).body("Listing created successfully");
+        Listing listing = listingService.createListing(userId);
+        return ResponseEntity.status(201).body(listing);
     } catch (IllegalArgumentException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     } catch (Exception e) {
@@ -56,7 +56,7 @@ public class ListingController {
     Long userID = 1L; // from auth JWT
     try {
       ListingsResult listingsResult = listingService.searchListings(keyWord, category, userID);
-      return ResponseEntity.status(201).body(listingsResult);
+      return ResponseEntity.status(200).body(listingsResult);
     } catch (IllegalArgumentException e) { // if no listing is found
         return ResponseEntity.badRequest().body(e.getMessage());
     } catch (Exception e) {
@@ -69,7 +69,7 @@ public class ListingController {
     Listing listing;
     try {
       listing = listingService.getListing(listingId);
-      return ResponseEntity.status(201).body(listing);
+      return ResponseEntity.status(200).body(listing);
     } catch (IllegalArgumentException e) { // if no listing is found
         return ResponseEntity.badRequest().body(e.getMessage());
     } catch (Exception e) {
@@ -85,7 +85,7 @@ public class ListingController {
     Long userId = 1l; //get from JWT
     try {
       Listing listing = listingService.updateListing(listingId, updates, userId);
-      return ResponseEntity.status(201).body(listing);
+      return ResponseEntity.status(200).body(listing);
     } catch (IllegalArgumentException e){
         return ResponseEntity.badRequest().body(e.getMessage());
     } catch (Exception e) {
@@ -99,7 +99,7 @@ public class ListingController {
     Long adminId = 1L; // get from JWT
     try{
       Listing listing = listingService.flagListing(listingID, adminId);
-      return ResponseEntity.status(201).body(listing);
+      return ResponseEntity.status(200).body(listing);
     } catch (IllegalArgumentException e){
         return ResponseEntity.badRequest().body(e.getMessage());
     } catch (Exception e){
@@ -113,7 +113,7 @@ public class ListingController {
     try{
       Long userId = 1l; // get rom JWT
       listingService.deleteListing(listingID, userId);
-      return ResponseEntity.status(201).body("Deleted Succesfully");
+      return ResponseEntity.status(200).body("Deleted Succesfully");
     } catch (IllegalArgumentException e){
         return ResponseEntity.badRequest().body(e.getMessage());
     } catch (Exception e){

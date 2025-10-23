@@ -1,0 +1,5 @@
+com/backend/model/UserTest.class
+com/backend/e2e/ListingE2ETest.class
+com/backend/controller/ListingControllerTest.class
+com/backend/model/ListingTest.class
+com/backend/service/ListingServiceTest.class

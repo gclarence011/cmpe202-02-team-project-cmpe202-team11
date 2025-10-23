@@ -32,16 +32,20 @@ public class ListingService {
   }
 
   // Create listing
-  public void createListing(Long userId){
+  public Listing createListing(Long userId){
     // Get the user creating the listing 
+    System.out.println("find user");
     User seller = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException( "User not found"));
+    System.out.println("user found");
     Listing listing = new Listing();
+    System.out.println("Listing created");
     // Set the seller 
     listing.setSeller(seller);
     // Save into database
     try{
       listingRepository.save(listing);
       System.out.println("Creating listing" + listing.getTitle()); // comments
+      return listing;
     } catch (DataIntegrityViolationException e) {
         throw new IllegalArgumentException("Invalid listing data");
     } catch (Exception e) {
@@ -54,6 +58,8 @@ public class ListingService {
     Listing listing;
     try{
        listing = listingRepository.findById(id).orElseThrow(() -> new IllegalArgumentException( "Listing not found"));
+    }  catch (IllegalArgumentException e){
+        throw e;
     }  catch (Exception e) {
         throw new RuntimeException("Database error: " + e.getMessage());
     }

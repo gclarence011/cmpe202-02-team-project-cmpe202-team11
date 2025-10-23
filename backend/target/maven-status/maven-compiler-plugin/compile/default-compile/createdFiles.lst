@@ -1,6 +1,16 @@
 com/backend/controller/HelloController$Message.class
 com/backend/config/CorsConfig$1.class
+com/backend/model/Listing.class
 com/backend/controller/HelloController.class
 com/backend/BackendApplication.class
+com/backend/repository/ListingRepository.class
+com/backend/model/Category.class
+com/backend/model/User.class
+com/backend/service/ListingService.class
 com/backend/config/CorsConfig.class
+com/backend/dto/ListingsResult.class
+com/backend/repository/UserRepository.class
+com/backend/service/UserService.class
 com/backend/controller/ListingController.class
+com/backend/model/Role.class
+com/backend/model/Status.class

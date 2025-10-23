@@ -17,6 +17,7 @@ jobs:
 
       # 2. Run tests
       - name: Run tests
+        working-directory: backend
         run: mvn test
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://market-place-database.chakkagimn20.us-east-2.rds.amazonaws.com:5432/marketplacedb

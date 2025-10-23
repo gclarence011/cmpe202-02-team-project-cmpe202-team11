@@ -20,7 +20,7 @@ import java.util.HashMap;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = com.backend.BackendApplication.class
 )
-public class ListingE2ETest {
+public class ListingE2Eit {
 
     @LocalServerPort
     private int port;

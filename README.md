@@ -22,8 +22,9 @@ Steps to Run
   cd cmpe202-02-team-project-cmpe202-team11
 ```
 2. Configure Application Properties (TBD - need to integrate with AWS Postgress)  
-   a. Open src/main/resources/application.properties  
-   b. Set db connection and other environment
+   a. Create a copy of application-example.properties in src/main/resources/
+   b. Rename the file to application.properties (it should be in src/main/resources/application.properties)  
+   c. Set the username and password for the db and more  
 3. Go to Backend Folder
 ```bash
 	cd backend
@@ -38,6 +39,13 @@ Steps to Run
 ```
 6. Check Backend  
    a. It should run at http://localhost:8080.
+
+7. To run test  
+   a. Go to backend folder
+   b. run test
+	```bash
+		mvn test
+	```
    
 # Frontend
 Prerequisites  

@@ -14,6 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
+import java.io.IOException;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.mock.web.MockMultipartFile;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -26,6 +30,9 @@ class ListingServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private ImageService imageService;
+
     @InjectMocks
     private ListingService listingService;
 
@@ -37,10 +44,13 @@ class ListingServiceTest {
         mockUser = new User();
         //mockUser.setId(1L);
 
+        List<String> photos = new ArrayList<>(List.of("test1.jpg", "test2.jpg", "test3.jpg"));
+
         mockListing = new Listing();
         mockListing.setSeller(mockUser);
         mockListing.setTitle("Test Listing");
         mockListing.setStatus(Status.DRAFT);
+        mockListing.setPhotos(photos);
     }
 
     // ---------------- createListing() ----------------
@@ -113,12 +123,82 @@ class ListingServiceTest {
 
         assertThrows(IllegalArgumentException.class, () -> listingService.updateListing(100L, updates, 1L));
     }
+    @Test
+    void testUpdateListing_ValidPhotos() {
+        List<String> newPhotos = List.of("test1.jpg", "test2.jpg", "test4.jpg");
+        List<String> expectedPhotos = List.of("test1.jpg", "test2.jpg");
+        Map<String, Object> updates = Map.of("photos", newPhotos);
+
+        when(listingRepository.findById(100L)).thenReturn(Optional.of(mockListing));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+        when(listingRepository.save(any(Listing.class))).thenReturn(mockListing);
+
+        doNothing().when(imageService).deleteImage(anyString());
+
+        Listing result = listingService.updateListing(100L, updates, 1L);
+
+        assertEquals(expectedPhotos, result.getPhotos());
+    }
+
+    // ---------------- uploadImage() ----------------
+    @Test
+    void testUploadImage_Success() throws IOException {
+        Long listingId = 100L;
+        Long userId = 1L;
+
+        // Mock image file
+        MultipartFile mockImage = new MockMultipartFile(
+                "file", "test.jpg", "image/jpeg", "fake image data".getBytes());
+
+        // Setup mock listing and user
+        mockListing.setSeller(mockUser);
+        mockListing.setPhotos(new ArrayList<>(List.of("existing1.jpg")));
+
+        when(listingRepository.findById(listingId)).thenReturn(Optional.of(mockListing));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
+        when(imageService.uploadImage(mockImage)).thenReturn("https://s3.amazonaws.com/bucket/test.jpg");
+        when(listingRepository.save(any(Listing.class))).thenReturn(mockListing);
+
+        // Act
+        String resultUrl = listingService.uploadImage(mockImage, listingId, userId);
+
+        // Assert
+        assertEquals("https://s3.amazonaws.com/bucket/test.jpg", resultUrl);
+        assertTrue(mockListing.getPhotos().contains(resultUrl));
+        verify(imageService, times(1)).uploadImage(mockImage);
+        verify(listingRepository, times(1)).save(mockListing);
+    }
+    @Test
+    void testUploadImage_ListingNotFound() {
+        when(listingRepository.findById(100L)).thenReturn(Optional.empty());
+
+        MultipartFile mockImage = new MockMultipartFile("file", "test.jpg", "image/jpeg", "data".getBytes());
+
+        Exception e = assertThrows(IllegalArgumentException.class,
+                () -> listingService.uploadImage(mockImage, 100L, 1L));
+
+        assertEquals("Listing not found", e.getMessage());
+    }
+    @Test
+    void testUploadImage_UnauthorizedUser() {
+        User anotherUser = new User();
+        when(listingRepository.findById(100L)).thenReturn(Optional.of(mockListing));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(anotherUser));
+        MultipartFile mockImage = new MockMultipartFile("file", "test.jpg", "image/jpeg", "data".getBytes());
+
+        Exception e = assertThrows(IllegalArgumentException.class,
+                () -> listingService.uploadImage(mockImage, 100L, 1L));
+
+        assertEquals("User is not the seller", e.getMessage());
+    }
+
 
     // ---------------- deleteListing() ----------------
     @Test
     void testDeleteListing_Success() {
         when(listingRepository.findById(100L)).thenReturn(Optional.of(mockListing));
         when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+        doNothing().when(imageService).deleteImage(anyString());
 
         assertDoesNotThrow(() -> listingService.deleteListing(100L, 1L));
         verify(listingRepository, times(1)).delete(mockListing);

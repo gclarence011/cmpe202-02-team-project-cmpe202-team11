@@ -8,24 +8,32 @@ import com.backend.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class ListingControllerTest {
 
     private ListingService listingService;
     private UserService userService;
     private ListingController listingController;
+    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
         listingService = mock(ListingService.class);
         userService = mock(UserService.class);
         listingController = new ListingController(userService, listingService);
+        mockMvc = MockMvcBuilders.standaloneSetup(listingController).build();
     }
 
     // ✅ test hello endpoint
@@ -162,5 +170,45 @@ public class ListingControllerTest {
 
         assertEquals(400, response.getStatusCode().value());
         assertEquals("No listings found", response.getBody());
+    }
+
+    // ✅ test upload endpoint success
+    @Test
+    void testUpload_Success() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "image.jpg", "image/jpeg", "image-content".getBytes());
+        String imageUrl = "http://example.com/image.jpg";
+
+        when(listingService.uploadImage(any(MultipartFile.class), any(Long.class), any(Long.class))).thenReturn(imageUrl);
+
+        Long listingId = 1L;
+        mockMvc.perform(multipart("/api/listings/" + listingId + "/upload").file(file))
+                .andExpect(status().isOk())
+                .andExpect(content().string(imageUrl));
+    }
+
+    // ❌ test upload endpoint IllegalArgumentException handling
+    @Test
+    void testUpload_BadRequest() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "image.jpg", "image/jpeg", "image-content".getBytes());
+
+        when(listingService.uploadImage(any(MultipartFile.class), any(Long.class), any(Long.class))).thenThrow(new IllegalArgumentException("Invalid file"));
+
+        Long listingId = 1L;
+        mockMvc.perform(multipart("/api/listings/" + listingId + "/upload").file(file))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Invalid file"));
+    }
+
+    // ❌ test upload endpoint generic Exception handling
+    @Test
+    void testUpload_InternalServerError() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "image.jpg", "image/jpeg", "image-content".getBytes());
+
+        when(listingService.uploadImage(any(MultipartFile.class), any(Long.class), any(Long.class))).thenThrow(new RuntimeException("Server error"));
+
+        Long listingId = 1L;
+        mockMvc.perform(multipart("/api/listings/" + listingId + "/upload").file(file))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().string("An unexpected error occuredServer error"));
     }
 }

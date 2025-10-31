@@ -1,12 +1,18 @@
 package com.backend.controller;
 
+import java.io.IOException;
 import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +23,7 @@ import com.backend.service.UserService;
 import com.backend.model.Listing;
 import com.backend.model.Category;
 import com.backend.dto.ListingsResult;
+import com.backend.service.ImageService;
 
 @RestController
 public class ListingController {
@@ -77,7 +84,7 @@ public class ListingController {
     }
   }
 
-  // Update Listing information
+  // Update Listing information (exluding image)
   @PatchMapping("api/listings/{listingId}") 
   public ResponseEntity<?> updateListing(
                                   @PathVariable Long listingId, 
@@ -91,8 +98,26 @@ public class ListingController {
     } catch (Exception e) {
       return ResponseEntity.internalServerError().body("An unexpected error occured" + e.getMessage());
     }
-    
   }
+  // Upload Image
+  @Autowired
+  private ImageService s3Service; 
+
+  @PostMapping("api/listings/{listingId}/upload")
+  public ResponseEntity<?> upload(
+                    @PathVariable Long listingId,
+                    @RequestParam("file") MultipartFile image) throws IOException {
+    Long userId = 1L; // get from JWT
+    try{
+      String url = listingService.uploadImage(image,listingId,userId);
+      return ResponseEntity.status(200).body(url);
+    } catch (IllegalArgumentException e){
+        return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().body("An unexpected error occured" + e.getMessage());
+    }
+  }
+
   // Flag Listings
   @PatchMapping("api/listings/{listingID}/flag")
   public ResponseEntity<?> flagListing(@PathVariable Long listingID){

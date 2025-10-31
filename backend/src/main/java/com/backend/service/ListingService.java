@@ -2,7 +2,13 @@ package com.backend.service;
 
 import java.util.Map;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.io.IOException;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import com.backend.model.Listing;
@@ -14,6 +20,8 @@ import com.backend.model.Role;
 import com.backend.repository.ListingRepository;
 import com.backend.repository.UserRepository;
 
+import com.backend.service.ImageService;
+
 import com.backend.dto.ListingsResult;
 
 @Service
@@ -21,10 +29,12 @@ public class ListingService {
   // Initializiations 
   private final ListingRepository listingRepository;
   private final UserRepository userRepository;
+  private final ImageService imageService;
 
-  public ListingService(ListingRepository listingRepository, UserRepository userRepository){
+  public ListingService(ListingRepository listingRepository, UserRepository userRepository, ImageService imageService){
     this.listingRepository = listingRepository;
     this.userRepository = userRepository;
+    this.imageService = imageService;
   }
 
   public String hello() {
@@ -91,21 +101,30 @@ public class ListingService {
     if (updates.containsKey("description")){
       listing.setDescription((String) updates.get("description"));
     }
+    if (updates.containsKey("photos")){
+      List<String> newPhotoList = (List<String>) updates.get("photos");
+      List<String> currentPhotoList = listing.getPhotos();
+
+      // Delete photos not in the new list
+      Iterator<String> iterator = currentPhotoList.iterator();
+      while (iterator.hasNext()) {
+        String photoUrl = iterator.next();
+        if (!newPhotoList.contains(photoUrl)){
+          try {
+            imageService.deleteImage(photoUrl);
+            iterator.remove();
+          } catch (Exception e){
+          throw new RuntimeException("Error"+ e.getMessage(),e);
+          }
+        }
+      }
+      listing.setPhotos(currentPhotoList);
+    }
     if (updates.containsKey("price")){
       try {
         listing.setPrice(Double.valueOf(updates.get("price").toString()));
       }catch (NumberFormatException e) {
         throw new IllegalArgumentException("Invalid price format");
-      }
-    }
-    if (updates.containsKey("photos")){
-      Object photosObj = updates.get("photos");
-      if (photosObj instanceof List<?>){
-        List<?> rawlist = (List<?>) photosObj;
-        List<String> photoList = rawlist.stream().map(Object::toString).toList();
-        listing.setPhotos(photoList);
-      } else {
-        throw new IllegalArgumentException("Invalid photo format");
       }
     }
     if (updates.containsKey("category")){
@@ -127,12 +146,49 @@ public class ListingService {
     return listingRepository.save(listing);
   }
 
-  // Remove Listing
+  // Upload photo
+  public String uploadImage(MultipartFile image, Long listingId, Long userId){
+    Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
+    User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    // Make sure that the user is the seller of the listing
+    if (listing.getSeller() != user) { 
+      throw new IllegalArgumentException("User is not the seller");
+    }
+    String imageURL;
+    try{
+      imageURL = imageService.uploadImage(image);
+    }catch (IOException e){
+      throw new RuntimeException("Failed to upload image: " + e.getMessage());
+    }
+
+    List<String> photos = listing.getPhotos();
+    if (photos == null){
+      photos = new ArrayList<>();
+      listing.setPhotos(photos);
+    }
+    photos.add(imageURL);
+    listing.setPhotos(photos);
+    listingRepository.save(listing);
+    return imageURL;
+  }
+
+  // Remove Listing (
   public void deleteListing(Long listingID, Long userId){
     Listing listing = listingRepository.findById(listingID).orElseThrow(() -> new RuntimeException("Listing not found"));
     User user = userRepository.findById(userId).orElse(null);
     if (listing.getSeller() != user) {
       throw new IllegalArgumentException("Only Listing Seller can delete");
+    }
+    List<String> photos = listing.getPhotos();
+    // Delete image from s3
+    if (photos != null && !photos.isEmpty()){
+      for (String photoURL : photos){
+        try{
+          imageService.deleteImage(photoURL);
+        } catch (Exception e){
+          throw new RuntimeException("Error"+ e.getMessage(),e);
+        }
+      }
     }
     listingRepository.delete(listing);
   }

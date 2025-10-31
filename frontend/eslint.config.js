@@ -1,29 +1,71 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import { defineConfig, globalIgnores } from 'eslint/config'
+// @ts-check
 
-export default defineConfig([
-  globalIgnores(['dist']),
+import js from "@eslint/js";
+import globals from "globals";
+import react from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
+import prettier from "eslint-config-prettier";
+import eslintPluginImport from "eslint-plugin-import";
+
+/**
+ * ESLint configuration for Campus Marketplace Frontend
+ * - Compatible with React + Vite
+ * - Works with JS or TS files
+ * - Integrates Prettier (no formatting conflicts)
+ */
+
+export default [
+  js.configs.recommended,
   {
-    files: ['**/*.{js,jsx}'],
-    extends: [
-      js.configs.recommended,
-      reactHooks.configs['recommended-latest'],
-      reactRefresh.configs.vite,
-    ],
+    files: ["**/*.{js,jsx,ts,tsx}"],
+    ignores: ["dist/**", "node_modules/**"],
+
     languageOptions: {
-      ecmaVersion: 2020,
       globals: globals.browser,
       parserOptions: {
-        ecmaVersion: 'latest',
+        ecmaVersion: "latest",
+        sourceType: "module",
         ecmaFeatures: { jsx: true },
-        sourceType: 'module',
       },
     },
+
+    plugins: {
+      react,
+      "react-hooks": reactHooks,
+      import: eslintPluginImport,
+    },
+
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // --- React Rules ---
+      "react/react-in-jsx-scope": "off", // Vite handles React import automatically
+      "react/prop-types": "off",
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+
+      // --- Import Rules ---
+      "import/order": [
+        "warn",
+        {
+          groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
+          "newlines-between": "always",
+        },
+      ],
+
+      // --- Code Quality ---
+      "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+      "no-console": "off",
+      "no-debugger": "warn",
+
+      // --- Style Consistency ---
+      "prefer-const": "warn",
+      "no-var": "error",
+
+      // --- Prettier Integration ---
+      ...prettier.rules,
+    },
+
+    settings: {
+      react: { version: "detect" },
     },
   },
-])
+];

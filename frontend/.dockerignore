@@ -1,9 +1,54 @@
+# Dependencies & caches
 node_modules
-npm-debug.log
+.pnpm-store
+.npm
+.yarn
+.pnp.*
+**/.vite
+**/node_modules/.vite
+.eslintcache
+
+# Build outputs
+dist
+build
+.storybook-static
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug*.log
+
+# Environment & local config
+.env
+.env.*
+!.env.example
+*.local
+
+# Editor/OS cruft
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+*.swp
+
+# Tests & coverage & e2e artifacts
+coverage
+.cypress
+cypress/videos
+cypress/screenshots
+playwright-report
+test-results
+
+# Git & CI metadata
 .git
 .gitignore
-README.md
-.env
-.nyc_output
-coverage
-.DS_Store
+.gitattributes
+.github
+
+# Tool/hosting outputs (ignore if not used)
+.vercel
+.netlify
+firebase-debug.log

@@ -1,7 +1,9 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/VM5AL9S5)
 
-Scrum Manager
-- https://docs.google.com/spreadsheets/d/1HfVKEmBjztNtblDBRnfNRHagL97_EXRULnCIfn5pPmA/edit?gid=1742583490#gid=1742583490
+# Scrum Manager
+- https://docs.google.com/spreadsheets/d/1HfVKEmBjztNtblDBRnfNRHagL97_EXRULnCIfn5pPmA/edit?gid=1742583490#gid=1742583490  
+# Project Folder  
+- https://drive.google.com/drive/folders/0AAV4cqDMeHrtUk9PVA?dmr=1&ec=wgc-drive-hero-goto
 
 # How to run the app:
 # Backend
@@ -22,8 +24,9 @@ Steps to Run
   cd cmpe202-02-team-project-cmpe202-team11
 ```
 2. Configure Application Properties (TBD - need to integrate with AWS Postgress)  
-   a. Open src/main/resources/application.properties  
-   b. Set db connection and other environment
+   a. Create a copy of application-example.properties in src/main/resources/
+   b. Rename the file to application.properties (it should be in src/main/resources/application.properties)  
+   c. Set the username and password for the db and more  
 3. Go to Backend Folder
 ```bash
 	cd backend
@@ -38,6 +41,13 @@ Steps to Run
 ```
 6. Check Backend  
    a. It should run at http://localhost:8080.
+
+7. To run test  
+   a. Go to backend folder
+   b. run test
+	```bash
+		mvn test
+	```
    
 # Frontend
 Prerequisites  

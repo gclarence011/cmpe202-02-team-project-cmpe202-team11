@@ -1,0 +1,48 @@
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { api, routes } from "@/lib/api";
+
+type Listing = { id:string; title:string; price:number; description?:string; imageUrl?:string; ownerId?:string; };
+
+export default function ListingDetails(){
+  const { id } = useParams<{id:string}>();
+  const [item,setItem]=useState<Listing|null>(null);
+  const [loading,setLoading]=useState(true);
+  const navigate = useNavigate();
+
+  useEffect(()=>{ (async()=>{
+    try{ const r = await api.get(routes.listings.detail(id!)); setItem(r.data); }
+    finally{ setLoading(false); }
+  })(); },[id]);
+
+  async function startChat(){
+    if(!id) return;
+    const r = await api.post(routes.chats.start(id));
+    const chatId = r.data?.id || r.data?.chatId;
+    if(chatId) navigate(`/chats/${chatId}`);
+  }
+
+  async function markReport(){
+    if(!id) return;
+    await api.patch(routes.listings.markSold(id)); // adjust if your backend uses PATCH /:id/mark
+    navigate("/");
+  }
+
+  if(loading) return <p>Loading...</p>;
+  if(!item) return <p>Listing not found.</p>;
+
+  return (
+    <section className="grid md:grid-cols-2 gap-6">
+      <img src={item.imageUrl} alt={item.title} className="w-full aspect-square object-cover bg-gray-100 rounded-2xl"/>
+      <div className="space-y-3">
+        <h2 className="text-2xl font-semibold">{item.title}</h2>
+        <div className="text-xl">${item.price?.toFixed(2)}</div>
+        <p className="text-gray-700">{item.description}</p>
+        <div className="flex gap-2">
+          <button onClick={startChat} className="rounded-lg px-3 py-2 border bg-black text-white">Chat with Seller</button>
+          <button onClick={markReport} className="rounded-lg px-3 py-2 border">Mark as Sold/Report</button>
+        </div>
+      </div>
+    </section>
+  );
+}

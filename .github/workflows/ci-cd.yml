@@ -43,6 +43,9 @@ jobs:
           CLOUD_AWS_REGION_STATIC: us-east-2
           AWS_BUCKET_NAME: s3-marketplace-image
 
+          COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+          COGNITO_CLIENT_SECRET: ${{ secrets.COGNITO_CLIENT_SECRET }}
+
 
       # 4. Set up Docker Buildx (for building images)
       - name: Set up Docker Buildx

@@ -1,4 +1,4 @@
-package com.backend.controller;
+package com.backend.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +7,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+
+import com.backend.security.CognitoLogoutHandler;
 
 /**
  * Class to configure AWS Cognito as an OAuth 2.0 authorizer with Spring Security.

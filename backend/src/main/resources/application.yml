@@ -1,14 +1,6 @@
 spring:
   security:
     oauth2:
-      client:
-        registration:
-          cognito:
-            clientId: ${COGNITO_CLIENT_ID}
-            clientSecret: ${COGNITO_CLIENT_SECRET}
-            scope: openid, profile
-            redirectUri: "{baseUrl}/login/oauth2/code/cognito"
-            authorizationGrantType: authorization_code
-        provider:
-          cognito:
-            issuerUri: https://cognito-idp.us-west-1.amazonaws.com/us-west-1_rxV8V92Ch
+      resourceserver:
+        jwt:
+          issuer-uri: https://cognito-idp.us-west-1.amazonaws.com/us-west-1_rxV8V92Ch

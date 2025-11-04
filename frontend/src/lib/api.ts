@@ -5,9 +5,9 @@ const API_BASE = (typeof window !== "undefined" && window.__ENV?.API_BASE_URL) |
 export const api = axios.create({ baseURL: API_BASE.replace(/\/$/, ""), timeout: 15000 });
 
 export const routes = {
-  auth: { signup:"/auth/signup", login:"/auth/login", logout:"/auth/logout", me:"/auth/me", refresh:"/auth/refresh" },
-  users: { public:(id:string)=>`/users/${id}`, me:"/users/me", saved:"/users/me/saved", saveToggle:(id:string)=>`/users/me/saved/${id}` },
-  listings: { list:"/listings", detail:(id:string)=>`/listings/${id}`, create:"/listings", update:(id:string)=>`/listings/${id}`, remove:(id:string)=>`/listings/${id}`, markSold:(id:string)=>`/listings/${id}/mark` },
+  auth: { signup:"/auth/signup", login:"/auth/login", logout:"/auth/logout", me:"/auth/me", refresh:"/auth/refresh" }, // Not implemented
+  users: { public:(id:string)=>`/users/${id}`, me:"/users/me", saved:"/users/me/saved", saveToggle:(id:string)=>`/users/me/saved/${id}` }, // Does not exist
+  listings: { list:"api/listings/search", detail:(id:string)=>`api/listings/${id}`, create:"/listings", update:(id:string)=>`/listings/${id}`, remove:(id:string)=>`/listings/${id}`, markSold:(id:string)=>`/listings/${id}/mark` },
   search: { q:"/search", categories:"/browse/categories", category:(slug:string)=>`/browse/category/${slug}`, recommended:"/browse/recommend" },
   chats: { mine:"/chats", start:(listingId:string)=>`/chats/listing/${listingId}`, room:(chatId:string)=>`/chats/${chatId}`, send:(chatId:string)=>`/chats/${chatId}/msg` },
   orders: { create:"/orders", detail:(id:string)=>`/orders/${id}`, mine:"/orders" }

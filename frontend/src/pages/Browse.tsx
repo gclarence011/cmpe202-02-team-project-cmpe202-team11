@@ -7,7 +7,7 @@ type Listing = {
   id: string;
   title: string;
   price: number;
-  thumbnailUrl?: string;
+  photos?: string[];
   badge?: string;
   category?: string;
 };
@@ -133,13 +133,16 @@ export default function Browse() {
     try {
       const res = await api.get(routes.listings.list, {
         params: {
-          q: f?.q,
+          keyWord: f?.q ?? "",
           min: f?.min,
           max: f?.max,
           category: f?.category || activeCategory,
         },
       });
-      const data = Array.isArray(res.data) ? (res.data as Listing[]) : [];
+      const data = Array.isArray(res.data.listings) ? (res.data.listings as Listing[]) : [];
+      console.log("Data from API:", res.data);
+      console.log("Data from API:", data);
+
       if (data.length === 0 && !showDemo) {
         setItems([]); // real empty
       } else if (data.length === 0 && showDemo) {

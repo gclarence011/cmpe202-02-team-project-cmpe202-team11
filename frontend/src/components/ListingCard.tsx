@@ -5,11 +5,12 @@ type Props = {
   id: string;
   title: string;
   price: number;
-  thumbnailUrl?: string;
+  photos?: string[];
   badge?: string;
 };
 
-export default function ListingCard({ id, title, price, thumbnailUrl, badge }: Props) {
+export default function ListingCard({ id, title, price, photos, badge }: Props) {
+  const thumbnailUrl = photos && photos.length > 0 ? photos[0] : undefined;
   return (
     <Link
       to={`/listings/${id}`}

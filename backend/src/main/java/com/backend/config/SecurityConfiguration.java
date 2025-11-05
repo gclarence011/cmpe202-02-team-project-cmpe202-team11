@@ -17,7 +17,7 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    @Value("${frontend.url}")
+    @Value("${frontend.url:http://localhost:3000}")
     private String frontendUrl;
 
     @Bean

@@ -49,7 +49,7 @@ jobs:
           COGNITO_ISSUER_URI: https://cognito-idp.us-west-1.amazonaws.com/us-west-1_rxV8V92Ch
           COGNITO_REDIRECT_URI: http://localhost:3000
 
-          FRONTEND_URLL: http://localhost:3000
+          FRONTEND_URL: http://localhost:3000
 
 
 

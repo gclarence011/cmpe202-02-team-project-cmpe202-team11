@@ -16,13 +16,13 @@ import java.util.Map;
 @Service
 public class CognitoService {
 
-    @Value("${cognito.clientId}")
+    @Value("${cognito.client_id}")
     private String clientId;
 
-    @Value("${cognito.clientSecret}")
+    @Value("${cognito.client_secret}")
     private String clientSecret;
 
-    @Value("${cognito.redirectUri}")
+    @Value("${cognito.redirect_uri}")
     private String redirectUri;
 
     @Value("${cognito.domain}")

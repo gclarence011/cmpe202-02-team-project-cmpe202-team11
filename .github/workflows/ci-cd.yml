@@ -4,11 +4,11 @@ on:
   push:
     branches: 
     - main
-    - ci-test
+    - ci/cdtest
   pull_request:
     branches: 
     - main
-    - ci-test
+    - ci/cdtest
 
 jobs:
   build-test-deploy:

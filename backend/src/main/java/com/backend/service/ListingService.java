@@ -8,7 +8,6 @@ import java.io.IOException;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import com.backend.model.Listing;
@@ -20,7 +19,6 @@ import com.backend.model.Role;
 import com.backend.repository.ListingRepository;
 import com.backend.repository.UserRepository;
 
-import com.backend.service.ImageService;
 
 import com.backend.dto.ListingsResult;
 
@@ -77,11 +75,16 @@ public class ListingService {
   }
 //----------------To Do --------------------------
     // batch search (to get list of listings) (TODO: Filter not implemented)
-  public ListingsResult searchListings(String key, Category category, Long userId){
+  public ListingsResult searchListings(String key, Category category){
     ListingsResult listingsResult = new ListingsResult(listingRepository.findAll());
     
     // query listing 
     // if empty
+    return listingsResult;
+  }
+
+  public ListingsResult userListings(String userId){ // not implemented
+    ListingsResult listingsResult = new ListingsResult(listingRepository.findAll());
     return listingsResult;
   }
 

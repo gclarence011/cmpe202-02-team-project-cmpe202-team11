@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Bean;
+import org.springframework.boot.test.context.TestConfiguration;
 
 import com.backend.model.*;
 
@@ -15,10 +17,19 @@ import static org.hamcrest.Matchers.equalTo;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.Map;
+
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = com.backend.BackendApplication.class
+    classes = {com.backend.BackendApplication.class, ListingE2ETest.JwtTestConfig.class},
+    properties = "spring.profiles.active=test"
 )
 public class ListingE2ETest {
 
@@ -29,14 +40,20 @@ public class ListingE2ETest {
 
     private Listing test_listing;
 
+    @MockBean
+    private com.backend.service.UserService userService;
+
     @BeforeEach
     void setup() {
         baseUrl = "http://localhost:" + port + "/api/listings";
         RestAssured.port = port;
 
+        when(userService.getUserId("c9f9f9be-c031-70f3-1f8d-2a5e94d753b6")).thenReturn(1L);
+
         // Create a listing to use in test
         test_listing = 
             given()
+                .header("Authorization", "Bearer TEST_TOKEN")
                 .contentType("application/json")
             .when()
                 .post(baseUrl + "/create")
@@ -49,6 +66,7 @@ public class ListingE2ETest {
     @AfterEach
     void cleanup(){
         given()
+            .header("Authorization", "Bearer TEST_TOKEN")
             .contentType("application/json")
         .when()
             .delete(baseUrl + "/delete/" + test_listing.getId())
@@ -59,6 +77,7 @@ public class ListingE2ETest {
     @Test
     void testGetListing() {
         given()
+            .header("Authorization", "Bearer TEST_TOKEN")
             .contentType("application/json")
         .when()
             .get(baseUrl + "/" + test_listing.getId())
@@ -74,6 +93,7 @@ public class ListingE2ETest {
         updates.put("title", "Updated Title");
 
         given()
+            .header("Authorization", "Bearer TEST_TOKEN")
             .contentType("application/json")
             .body(updates)
         .when()
@@ -86,6 +106,7 @@ public class ListingE2ETest {
     @Test
     void testGetListing_NotFound() {
         given()
+            .header("Authorization", "Bearer TEST_TOKEN")
             .contentType("application/json")
         .when()
             .get(baseUrl + "/999")  // non-existing ID
@@ -93,4 +114,18 @@ public class ListingE2ETest {
             .statusCode(400)
             .body(equalTo("Listing not found"));
     }
+
+    @TestConfiguration
+    static class JwtTestConfig {
+        @Bean
+        public JwtDecoder jwtDecoder() {
+            return token -> new Jwt(
+                token,
+                Instant.now(),
+                Instant.now().plusSeconds(3600),
+                Map.of("alg", "none"),              // must not be empty
+                Map.of("sub", "c9f9f9be-c031-70f3-1f8d-2a5e94d753b6")
+            );
+        }
+}
 }

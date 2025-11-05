@@ -9,6 +9,8 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  private String cogId;
+
   private String name;
   private String email;
   @Enumerated(EnumType.STRING)
@@ -27,6 +29,9 @@ public class User {
 
   // setters and getters
   public Long getID() {return id;}
+
+  public String getCogId() {return cogId;}
+  public void setCogId(String cogId) { this.cogId = cogId; }
 
   public String getName() {return name;}
   public void setName(String name) {this.name = name;}

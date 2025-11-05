@@ -2,25 +2,26 @@ package com.backend.service;
 
 import org.springframework.stereotype.Service;
 
+import com.backend.repository.UserRepository;
+import com.backend.model.User;
+
 @Service
 public class UserService {
   // test if service works
+  // Initializiations 
+  private final UserRepository userRepository;
+
+  public UserService(UserRepository userRepository){
+    this.userRepository = userRepository;
+  }
+
   public String hello() {
     return new String("User Serivces says hello!");
   }
-  
-  
 
-  // create user
-    // 1 user
-
-  // read user
-    // 1 user
-
-  // update user info
-    // 1 user
-
-  // delete user
-    // 1 user
+  public Long getUserId(String CogId){
+    User user = userRepository.findByCogId(CogId);
+    return user.getID();
+  }
   
 }

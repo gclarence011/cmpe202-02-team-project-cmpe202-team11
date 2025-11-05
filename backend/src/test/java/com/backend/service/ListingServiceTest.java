@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.mock.web.MockMultipartFile;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +40,7 @@ class ListingServiceTest {
 
     private User mockUser;
     private Listing mockListing;
+    private ListingsResult mockListingsResult;
 
     @BeforeEach
     void setUp() {
@@ -51,6 +54,10 @@ class ListingServiceTest {
         mockListing.setTitle("Test Listing");
         mockListing.setStatus(Status.DRAFT);
         mockListing.setPhotos(photos);
+
+        mockListingsResult = new ListingsResult();
+        mockListingsResult.addListing(mockListing);
+
     }
 
     // ---------------- createListing() ----------------
@@ -88,6 +95,25 @@ class ListingServiceTest {
         Exception e = assertThrows(IllegalArgumentException.class, () -> listingService.getListing(100L));
         assertEquals("Listing not found", e.getMessage());
     }
+
+    // ---------------- userListings() ----------------
+    @Test
+    void testUserListings_Success() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+        when(listingRepository.findAllBySellerId(null)).thenReturn(List.of(mockListing));
+
+        ListingsResult result = listingService.userListings(1L);
+
+        assertEquals(mockListingsResult.getListings(), result.getListings());
+    }
+    @Test
+    void testUserListings_UserNotFound() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> listingService.createListing(1L));
+        assertEquals("User not found", e.getMessage());
+    }
+
 
     // ---------------- updateListing() ----------------
     @Test
@@ -160,11 +186,11 @@ class ListingServiceTest {
         when(listingRepository.save(any(Listing.class))).thenReturn(mockListing);
 
         // Act
-        String resultUrl = listingService.uploadImage(mockImage, listingId, userId);
+        Listing result = listingService.uploadImage(mockImage, listingId, userId);
 
         // Assert
-        assertEquals("https://s3.amazonaws.com/bucket/test.jpg", resultUrl);
-        assertTrue(mockListing.getPhotos().contains(resultUrl));
+        assertEquals(mockListing, result);
+        assertTrue(mockListing.getPhotos().contains("https://s3.amazonaws.com/bucket/test.jpg"));
         verify(imageService, times(1)).uploadImage(mockImage);
         verify(listingRepository, times(1)).save(mockListing);
     }

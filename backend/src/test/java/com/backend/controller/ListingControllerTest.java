@@ -9,8 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.oauth2.jwt.Jwt;
 
@@ -20,22 +18,18 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class ListingControllerTest {
 
     private ListingService listingService;
     private UserService userService;
     private ListingController listingController;
-    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
         listingService = mock(ListingService.class);
         userService = mock(UserService.class);
         listingController = new ListingController(userService, listingService);
-        mockMvc = MockMvcBuilders.standaloneSetup(listingController).build();
     }
 
     // ✅ test hello endpoint
@@ -112,6 +106,26 @@ public class ListingControllerTest {
 
         assertEquals(400, response.getStatusCode().value());
         assertEquals("Listing not found", response.getBody());
+    }
+
+    // ✅ test userListings success
+    @Test
+    void testUserListings_Success() {
+        Jwt fakeJwt = new Jwt(
+                "tokenValue",
+                null,
+                null,
+                Map.of("alg", "none"),
+                Map.of("sub", "TEST_COG_ID")
+        );
+        when(userService.getUserId("TEST_COG_ID")).thenReturn(1L);
+        ListingsResult mockListingsResult = new ListingsResult();
+        when(listingService.userListings(1L)).thenReturn(mockListingsResult);
+
+        ResponseEntity<?> response = listingController.getListing(fakeJwt);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(mockListingsResult, response.getBody());
     }
 
     // ✅ test updateListing success
@@ -236,16 +250,15 @@ public class ListingControllerTest {
         MockMultipartFile file = new MockMultipartFile(
                 "file", "image.jpg", "image/jpeg", "image-content".getBytes()
         );
-        String imageUrl = "http://example.com/image.jpg";
-
+        Listing updatedListing = new Listing();
         when(listingService.uploadImage(any(MultipartFile.class), any(Long.class), any(Long.class)))
-                .thenReturn(imageUrl);
+                .thenReturn(updatedListing);
 
         Long listingId = 1L;
         ResponseEntity<?> response = listingController.upload(listingId, file, fakeJwt); 
 
         assertEquals(200, response.getStatusCode().value());
-        assertEquals(imageUrl, response.getBody());
+        assertEquals(updatedListing, response.getBody());
     }
 
     // ❌ test upload endpoint IllegalArgumentException handling

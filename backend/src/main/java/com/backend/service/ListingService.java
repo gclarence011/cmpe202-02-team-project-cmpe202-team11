@@ -83,12 +83,13 @@ public class ListingService {
     return listingsResult;
   }
 
-  public ListingsResult userListings(String userId){ // not implemented
-    ListingsResult listingsResult = new ListingsResult(listingRepository.findAll());
+  public ListingsResult userListings(Long userId){ 
+    User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    ListingsResult listingsResult = new ListingsResult(listingRepository.findAllBySellerId(user.getID()));
     return listingsResult;
   }
 
-  // update listing (Does not check if Photo URL is valid)
+  // update listing
     // individual listing
   public Listing updateListing(Long listingId, Map<String, Object> updates, Long userId){
     Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
@@ -150,7 +151,7 @@ public class ListingService {
   }
 
   // Upload photo
-  public String uploadImage(MultipartFile image, Long listingId, Long userId){
+  public Listing uploadImage(MultipartFile image, Long listingId, Long userId){
     Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
     User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
     // Make sure that the user is the seller of the listing
@@ -172,7 +173,7 @@ public class ListingService {
     photos.add(imageURL);
     listing.setPhotos(photos);
     listingRepository.save(listing);
-    return imageURL;
+    return listing;
   }
 
   // Remove Listing (

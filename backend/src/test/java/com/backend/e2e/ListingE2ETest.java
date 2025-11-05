@@ -101,6 +101,20 @@ public class ListingE2ETest {
     }
 
     @Test
+    void testUploadPhoto() {
+        java.io.File testImage = new java.io.File("src/test/resources/test-image.jpg");
+
+        given()
+            .header("Authorization", "Bearer TEST_TOKEN")
+            .multiPart("file", testImage)
+        .when()
+            .post(baseUrl + "/" + test_listing.getId() + "/upload")
+        .then()
+            .statusCode(200)
+            .body("photos.size()", equalTo(1));
+    }
+
+    @Test
     void testGetListing_NotFound() {
         given()
             .header("Authorization", "Bearer TEST_TOKEN")
@@ -124,5 +138,5 @@ public class ListingE2ETest {
                 Map.of("sub", "c9f9f9be-c031-70f3-1f8d-2a5e94d753b6")
             );
         }
-}
+} 
 }

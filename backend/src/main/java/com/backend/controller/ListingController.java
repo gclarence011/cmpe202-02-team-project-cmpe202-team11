@@ -69,7 +69,7 @@ public class ListingController {
         return ResponseEntity.internalServerError().body("An unexpected error occurred" + e.getMessage());
     }
   }
-    // Get specific listing
+  // Get specific listing
   @GetMapping("api/listings/{listingId}")
   public ResponseEntity<?> getListing(@PathVariable Long listingId){
     Listing listing;
@@ -82,6 +82,21 @@ public class ListingController {
         return ResponseEntity.internalServerError().body("An unexpected error occurred" + e.getMessage());
     }
   }
+  // Get user listings
+  @GetMapping("api/listings/user")
+  public ResponseEntity<?> getListing(@AuthenticationPrincipal Jwt jwt){
+    String CogId =  jwt.getClaim("sub");
+    Long userId = userService.getUserId(CogId);
+    try {
+      ListingsResult listingsResult  = listingService.userListings(userId);
+      return ResponseEntity.status(200).body(listingsResult);
+    } catch (IllegalArgumentException e) { // if no user is found
+        return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e) {
+        return ResponseEntity.internalServerError().body("An unexpected error occurred" + e.getMessage());
+    }
+  }
+
 
   // Update Listing information (exluding image)
   @PatchMapping("api/listings/{listingId}") 
@@ -110,8 +125,8 @@ public class ListingController {
     String CogId =  jwt.getClaim("sub");
     Long userId = userService.getUserId(CogId) ;
     try{
-      String url = listingService.uploadImage(image,listingId,userId);
-      return ResponseEntity.status(200).body(url);
+      Listing updatedListing = listingService.uploadImage(image,listingId,userId);
+      return ResponseEntity.status(200).body(updatedListing);
     } catch (IllegalArgumentException e){
         return ResponseEntity.badRequest().body(e.getMessage());
     } catch (Exception e) {

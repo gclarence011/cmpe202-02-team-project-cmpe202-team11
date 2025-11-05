@@ -45,6 +45,9 @@ jobs:
 
           COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
           COGNITO_CLIENT_SECRET: ${{ secrets.COGNITO_CLIENT_SECRET }}
+          COGNITO_DOMAIN: cognito.domain=us-west-1rxv8v92ch.auth.us-west-1.amazoncognito.com
+          COGNITO_ISSUER_URI: https://cognito-idp.us-west-1.amazonaws.com/us-west-1_rxV8V92Ch
+          COGNITO_REDIRECT_URI: http://localhost:5173
 
 
       # 4. Set up Docker Buildx (for building images)

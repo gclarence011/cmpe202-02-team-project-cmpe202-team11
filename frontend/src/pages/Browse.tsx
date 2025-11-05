@@ -140,8 +140,6 @@ export default function Browse() {
         },
       });
       const data = Array.isArray(res.data.listings) ? (res.data.listings as Listing[]) : [];
-      console.log("Data from API:", res.data);
-      console.log("Data from API:", data);
 
       if (data.length === 0 && !showDemo) {
         setItems([]); // real empty

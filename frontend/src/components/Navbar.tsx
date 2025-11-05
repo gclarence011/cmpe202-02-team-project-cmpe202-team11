@@ -1,8 +1,10 @@
 import { Link, NavLink } from "react-router-dom";
 import logo from "@/assets/logo-light.svg";
+import { useAuth } from "@/lib/AuthProvider";
 
 export default function Navbar(){
   const nav = (isActive:boolean)=>`px-3 py-2 rounded-lg hover:bg-gray-100 ${isActive?"bg-gray-200":""}`;
+  const { user, login, logout } = useAuth();
   return (
     <header className="border-b bg-white sticky top-0 z-40">
       <div className="container mx-auto px-4 py-3 flex items-center gap-4">
@@ -15,7 +17,13 @@ export default function Navbar(){
           <NavLink to="/create" className={({isActive})=>nav(isActive)}>Create</NavLink>
           <NavLink to="/chats" className={({isActive})=>nav(isActive)}>Chats</NavLink>
           <NavLink to="/admin" className={({isActive})=>nav(isActive)}>Admin</NavLink>
-          <NavLink to="/login" className={({isActive})=>nav(isActive)}>Login</NavLink>
+          {user ? (
+            <>
+              <button onClick={logout}>Logout</button>
+            </>
+          ) : (
+            <button onClick={login}>Login</button>
+          )}
         </nav>
       </div>
     </header>

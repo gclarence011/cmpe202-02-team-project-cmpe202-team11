@@ -17,14 +17,14 @@ export default function App(){ // removing ProtectedRoutes</ProtectedRoute>
       <Navbar/>
       <main className="container mx-auto p-4 flex-1">
         <Routes>
-          <Route path="/" element={<Browse/>} />
+          <Route path="/" element={<Browse/> } />
           <Route path="/login" element={<Login/>} />
-          <Route path="/listings/:id" element={<ListingDetails/>} />
-          <Route path="/create" element={<CreateListing/>} />
-          <Route path="/chats" element={ <Chat/> } />
-          <Route path="/chats/:id" element={ <ChatRoom/> } />
-          <Route path="/admin" element={ <AdminDashboard/> } />
-          <Route path="/admin/review" element={ <ReviewQueue/> } />
+          <Route path="/listings/:id" element={<ProtectedRoute><ListingDetails/></ProtectedRoute> } />
+          <Route path="/create" element={<ProtectedRoute><CreateListing/></ProtectedRoute> } />
+          <Route path="/chats" element={ <ProtectedRoute><Chat/></ProtectedRoute>  } />
+          <Route path="/chats/:id" element={ <ProtectedRoute><ChatRoom/></ProtectedRoute>  } />
+          <Route path="/admin" element={ <ProtectedRoute><AdminDashboard/></ProtectedRoute> } />
+          <Route path="/admin/review" element={ <ProtectedRoute><ReviewQueue/></ProtectedRoute>  } />
           <Route path="*" element={<NotFound/>} />
         </Routes>
       </main>

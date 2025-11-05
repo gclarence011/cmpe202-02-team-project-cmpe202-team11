@@ -1,6 +1,12 @@
 import axios, { AxiosError } from "axios";
 import { getAccessToken, getRefreshToken, setTokens, clearTokens } from "./session";
 
+let getToken: (() => string | null) | null = null;
+
+export function setAuthTokenGetter(fn: () => string | null) {
+  getToken = fn;
+}
+
 const API_BASE = (typeof window !== "undefined" && window.__ENV?.API_BASE_URL) || import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 export const api = axios.create({ baseURL: API_BASE.replace(/\/$/, ""), timeout: 15000 });
 
@@ -13,49 +19,42 @@ export const routes = {
   orders: { create:"/orders", detail:(id:string)=>`/orders/${id}`, mine:"/orders" }
 } as const;
 
-api.interceptors.request.use(cfg=>{
-  const t = getAccessToken();
-  if(t){ cfg.headers = cfg.headers || {}; cfg.headers.Authorization = `Bearer ${t}`; }
-  return cfg;
-});
-
-let refreshing = false;
-let queue: Array<(t:string)=>void> = [];
-
-async function refresh(): Promise<string> {
-  const r = getRefreshToken();
-  if(!r) throw new Error("no-refresh");
-  const res = await api.post(routes.auth.refresh, { refreshToken: r });
-  const newToken = res.data?.accessToken;
-  if(!newToken) throw new Error("no-token");
-  setTokens(newToken, r);
-  return newToken;
-}
-
-api.interceptors.response.use(r=>r, async (error: AxiosError)=>{
-  const original: any = error.config || {};
-  if(error.response?.status === 401 && !original._retry){
-    original._retry = true;
-    if(!refreshing){
-      refreshing = true;
-      try{
-        const nt = await refresh();
-        queue.forEach(fn=>fn(nt)); queue=[];
-        original.headers = original.headers || {};
-        original.headers.Authorization = `Bearer ${nt}`;
-        return api(original);
-      }catch(e){
-        clearTokens(); queue=[];
-        throw e;
-      }finally{ refreshing = false; }
-    }
-    return new Promise((resolve, reject)=>{
-      queue.push((nt:string)=>{
-        original.headers = original.headers || {};
-        original.headers.Authorization = `Bearer ${nt}`;
-        api(original).then(resolve).catch(reject);
-      });
-    });
+api.interceptors.request.use((config) => {
+  const token = getToken ? getToken() : null;
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
   }
-  throw error;
+  return config;
 });
+
+api.interceptors.response.use(
+  (res) => res,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const refreshToken = getRefreshToken();
+      if (!refreshToken) {
+        clearTokens();
+        throw error;
+      }
+      try {
+        const refreshRes = await api.post(routes.auth.refresh, { refreshToken });
+        const newTokens = refreshRes.data;
+        if (!newTokens?.accessToken) {
+          clearTokens();
+          throw error;
+        }
+        setTokens(newTokens.accessToken, newTokens.refreshToken || refreshToken);
+        originalRequest.headers = originalRequest.headers || {};
+        originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`;
+        return api(originalRequest);
+      } catch (e) {
+        clearTokens();
+        throw e;
+      }
+    }
+    throw error;
+  }
+);

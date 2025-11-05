@@ -84,7 +84,7 @@ public class ListingService {
   }
 
   public ListingsResult userListings(String userId){ // not implemented
-    ListingsResult listingsResult = new ListingsResult(listingRepository.findAll());
+    ListingsResult listingsResult = new ListingsResult(listingRepository.findAllByseller());
     return listingsResult;
   }
 

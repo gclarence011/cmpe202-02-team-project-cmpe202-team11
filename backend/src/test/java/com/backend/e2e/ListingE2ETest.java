@@ -18,8 +18,6 @@ import static org.hamcrest.Matchers.equalTo;
 import java.util.Map;
 import java.util.HashMap;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.Map;
 
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -28,8 +26,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = {com.backend.BackendApplication.class, ListingE2ETest.JwtTestConfig.class},
-    properties = "spring.profiles.active=test"
+    classes = {com.backend.BackendApplication.class, ListingE2ETest.JwtTestConfig.class}
 )
 public class ListingE2ETest {
 

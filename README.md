@@ -66,21 +66,24 @@ Steps to Run
   git clone https://github.com/gopinathsjsu/cmpe202-02-team-project-cmpe202-team11.git
   cd cmpe202-02-team-project-cmpe202-team11
 ```
-2. Go to Frontend Folder
+2. Configure .env frontend url (TBD - need to integrate with AWS Postgress)  
+   a. Go to.env in frontend  
+   b. Set the frontend url for the url redirect  
+   
+4. Go to Frontend Folder
 ```bash
 	cd frontend
 ```
-3. Install Dependencies
+4. Install Dependencies
 ```bash
 	npm install
 ```
-4. Run the Frontend
+5. Run the Frontend
 ```bash
 	npm run dev
 ```
-5. Check Backend  
+6. Check Frontend  
    a. It should run at [http://localhost:5173.](http://localhost:5173/)
-   
 
 # Docker
 How to Run the Docker-Compose File  

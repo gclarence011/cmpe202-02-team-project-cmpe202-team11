@@ -107,4 +107,18 @@ Run the following command to build (if needed) and start your containers:
   3. Check frontend and backend  
      a. Frontend: http://localhost:3000.  
      b. Backend: http://localhost:8080.
-
+     
+# Backend API List
+Auth  
+- POST  /auth/exchange -> exchange code from login to token
+  
+Listing
+- GET /api/listings/hello
+- POST /api/listings/create
+- GET /api/listings/search
+- GET /api/listings/{listingId}
+- GET /api/listings/user
+- PATCH /api/listings/{listingId}
+- POST /api/listings/{listingId}/upload
+- PATCH /api/listings/{listingID}/flag
+- DELETE /api/listings/delete/{listingID}

@@ -113,12 +113,12 @@ Auth
 - POST  /auth/exchange -> exchange code from login to token
   
 Listing
-- GET /api/listings/hello
-- POST /api/listings/create
-- GET /api/listings/search
-- GET /api/listings/{listingId}
-- GET /api/listings/user
-- PATCH /api/listings/{listingId}
-- POST /api/listings/{listingId}/upload
-- PATCH /api/listings/{listingID}/flag
-- DELETE /api/listings/delete/{listingID}
+- GET /api/listings/hello  -> return hello from backend
+- POST /api/listings/create -> create an empty listing only
+- GET /api/listings/search -> Input( keyWord, Category), Return list of listings (not implemented)
+- GET /api/listings/{listingId} -> Return listing 
+- GET /api/listings/user -> Return list of seller listing
+- PATCH /api/listings/{listingId} -> Input(update), Return updated listing (cannot upload photo, only delete)
+- POST /api/listings/{listingId}/upload -> Input(photo), Return updated listing
+- PATCH /api/listings/{listingID}/flag -> Return updated listing
+- DELETE /api/listings/delete/{listingID} -> Return "Deleted Successfully"

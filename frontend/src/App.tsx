@@ -17,7 +17,7 @@ export default function App(){ // removing ProtectedRoutes</ProtectedRoute>
       <Navbar/>
       <main className="container mx-auto p-4 flex-1">
         <Routes>
-          <Route path="/" element={<Browse/> } />
+          <Route path="/" element={<ProtectedRoute><Browse/></ProtectedRoute> } />
           <Route path="/login" element={<Login/>} />
           <Route path="/listings/:id" element={<ProtectedRoute><ListingDetails/></ProtectedRoute> } />
           <Route path="/create" element={<ProtectedRoute><CreateListing/></ProtectedRoute> } />

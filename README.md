@@ -107,5 +107,18 @@ Run the following command to build (if needed) and start your containers:
   3. Check frontend and backend  
      a. Frontend: http://localhost:3000.  
      b. Backend: http://localhost:8080.
-
-
+     
+# Backend API List
+Auth  
+- POST  /auth/exchange -> exchange code from login to token
+  
+Listing
+- GET /api/listings/hello  -> return hello from backend
+- POST /api/listings/create -> create an empty listing only
+- GET /api/listings/search -> Input( keyWord, Category), Return list of listings (not implemented)
+- GET /api/listings/{listingId} -> Return listing 
+- GET /api/listings/user -> Return list of seller listing
+- PATCH /api/listings/{listingId} -> Input(update), Return updated listing (cannot upload photo, only delete)
+- POST /api/listings/{listingId}/upload -> Input(photo), Return updated listing
+- PATCH /api/listings/{listingID}/flag -> Return updated listing
+- DELETE /api/listings/delete/{listingID} -> Return "Deleted Successfully"

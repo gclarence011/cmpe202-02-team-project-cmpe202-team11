@@ -21,6 +21,7 @@ export const routes = {
 
 api.interceptors.request.use((config) => {
   const token = getToken ? getToken() : null;
+  
   if (token) {
     config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${token}`;

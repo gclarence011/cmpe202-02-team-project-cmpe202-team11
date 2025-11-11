@@ -29,7 +29,6 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                 .requestMatchers("/test/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/search/nlp").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/search/health").permitAll()
                 .anyRequest().authenticated()
             )

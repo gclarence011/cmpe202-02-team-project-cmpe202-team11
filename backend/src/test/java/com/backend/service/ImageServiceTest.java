@@ -21,10 +21,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.services.s3.model.DeleteObjectResponse;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-
-
-import com.backend.service.ImageService;
 
 @ExtendWith(MockitoExtension.class)
 class ImageServiceTest {

@@ -21,11 +21,8 @@ export const routes = {
 
 api.interceptors.request.use((config) => {
   const token = getToken ? getToken() : null;
-  // Don't add auth header to public endpoints
-  const publicEndpoints = ['/api/search/nlp', '/api/search/health'];
-  const isPublicEndpoint = publicEndpoints.some(endpoint => config.url?.includes(endpoint));
   
-  if (token && !isPublicEndpoint) {
+  if (token) {
     config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${token}`;
   }

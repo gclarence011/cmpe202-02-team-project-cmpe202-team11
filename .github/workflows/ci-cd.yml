@@ -18,15 +18,35 @@ jobs:
       # 1. Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
-      # 2. Chekc if secret is set
-      - name: Check secret
+      # 2. Check secrets
+      - name: Check secrets
+        env:
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+          S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+          COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+          COGNITO_CLIENT_SECRET: ${{ secrets.COGNITO_CLIENT_SECRET }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: |
-          if [ -z "${{ secrets.DB_USERNAME }}" ]; then
-            echo "Secret not set"
-            exit 1 
-          else
-            echo "Secret is available"
-          fi
+          REQUIRED_SECRETS=(
+            DB_USERNAME
+            DB_PASSWORD
+            S3_ACCESS_KEY
+            S3_SECRET_KEY
+            COGNITO_CLIENT_ID
+            COGNITO_CLIENT_SECRET
+            GOOGLE_API_KEY
+          )
+
+          for SECRET in "${REQUIRED_SECRETS[@]}"; do
+            if [ -z "${!SECRET}" ]; then
+              echo "❌ Secret $SECRET is NOT set!"
+              exit 1
+            else
+              echo "✅ Secret $SECRET is available"
+            fi
+          done
 
       # 3. Run tests
       - name: Run tests
@@ -48,6 +68,8 @@ jobs:
           COGNITO_DOMAIN: cognito.domain=us-west-1rxv8v92ch.auth.us-west-1.amazoncognito.com
           COGNITO_ISSUER_URI: https://cognito-idp.us-west-1.amazonaws.com/us-west-1_rxV8V92Ch
           COGNITO_REDIRECT_URI: http://localhost:3000
+
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
 
           FRONTEND_URL: http://localhost:3000
 

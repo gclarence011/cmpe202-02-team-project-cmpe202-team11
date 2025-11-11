@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Filters, { FilterState } from "@/components/Filters";
 import ListingCard from "@/components/ListingCard";
+import { SearchAgent } from "@/components/SearchAgent";
 import { api, routes } from "@/lib/api";
 
 type Listing = {
@@ -122,6 +123,8 @@ export default function Browse() {
   const [items, setItems] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string | undefined>();
+  const [nlpResults, setNlpResults] = useState<Listing[] | null>(null);
+  const [nlpLoading, setNlpLoading] = useState(false);
 
   const showDemo = useMemo(
     () => new URLSearchParams(location.search).get("demo") === "1",
@@ -161,6 +164,20 @@ export default function Browse() {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeCategory]);
+
+  const handleNLPSearchResults = (results: any) => {
+    if (results && results.listings) {
+      setNlpResults(results.listings as Listing[]);
+    }
+  };
+
+  const handleNLPLoading = (loading: boolean) => {
+    setNlpLoading(loading);
+  };
+
+  const clearNLPResults = () => {
+    setNlpResults(null);
+  };
 
   return (
     <div className="space-y-8">
@@ -208,19 +225,51 @@ export default function Browse() {
         </div>
       </div>
 
-      {/* Featured */}
-      <Section
-        title="Featured picks"
-        items={items.slice(0, 4)}
-        loading={loading}
-      />
+      {/* Natural Language Search */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">Smart Search</h2>
+          {nlpResults && (
+            <button
+              onClick={clearNLPResults}
+              className="text-sm text-blue-600 hover:text-blue-800 underline"
+            >
+              Clear Results
+            </button>
+          )}
+        </div>
+        <SearchAgent
+          onSearchResults={handleNLPSearchResults}
+          onLoading={handleNLPLoading}
+        />
+      </div>
 
-      {/* Trending */}
-      <Section
-        title="Trending near you"
-        items={items.slice(4, 12)}
-        loading={loading}
-      />
+      {/* NLP Search Results */}
+      {nlpResults && (
+        <Section
+          title={`Smart Search Results (${nlpResults.length} found)`}
+          items={nlpResults}
+          loading={nlpLoading}
+        />
+      )}
+
+      {/* Featured */}
+      {!nlpResults && (
+        <>
+          <Section
+            title="Featured picks"
+            items={items.slice(0, 4)}
+            loading={loading}
+          />
+
+          {/* Trending */}
+          <Section
+            title="Trending near you"
+            items={items.slice(4, 12)}
+            loading={loading}
+          />
+        </>
+      )}
     </div>
   );
 }

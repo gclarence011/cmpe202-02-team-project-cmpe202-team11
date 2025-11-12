@@ -59,9 +59,18 @@ public class ListingController {
   // Get Listing
     // Get list of listings from a search
   @GetMapping("api/listings/search")
-  public ResponseEntity<?> getListings(@RequestParam String keyWord, Category category){
+  public ResponseEntity<?> getListings(
+        @RequestParam String keyWord,
+        @RequestParam(required = false) Category category,
+        @RequestParam(required = false) Double min,
+        @RequestParam(required = false) Double max) {
+    
+    double minValue = (min != null) ? min : 0;
+    double maxValue = (max != null) ? max : Double.MAX_VALUE;
+    
+    System.out.println("param"+keyWord+category+min+max);
     try {
-      ListingsResult listingsResult = listingService.searchListings(keyWord, category);
+      ListingsResult listingsResult = listingService.searchListings(keyWord, category, minValue, maxValue);
       return ResponseEntity.status(200).body(listingsResult);
     } catch (IllegalArgumentException e) { // if no listing is found
         return ResponseEntity.badRequest().body(e.getMessage());

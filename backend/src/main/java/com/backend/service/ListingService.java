@@ -73,13 +73,9 @@ public class ListingService {
     }
     return listing;
   }
-//----------------To Do --------------------------
-    // batch search (to get list of listings) (TODO: Filter not implemented)
-  public ListingsResult searchListings(String key, Category category){
-    ListingsResult listingsResult = new ListingsResult(listingRepository.findAll());
-    
-    // query listing 
-    // if empty
+  //  search (to get list of listings) (
+  public ListingsResult searchListings(String key, Category category, double min, double max){
+    ListingsResult listingsResult = new ListingsResult(listingRepository.searchByCriteria(key,min,max,category));
     return listingsResult;
   }
 

@@ -78,6 +78,16 @@ class ListingServiceTest {
         assertEquals("User not found", e.getMessage());
     }
 
+    // ---------------- searchListings() ------------
+    @Test
+    void testSearchListings_Success() {
+        when(listingRepository.searchByCriteria("key",0.0,100.0,Category.ELECTRONICS)).thenReturn(List.of(mockListing));
+
+        ListingsResult result = listingService.searchListings("key",Category.ELECTRONICS,0.0,100.0);
+
+        assertEquals(mockListingsResult.getListings(), result.getListings());
+    }
+
     // ---------------- getListing() ----------------
     @Test
     void testGetListing_Success() {

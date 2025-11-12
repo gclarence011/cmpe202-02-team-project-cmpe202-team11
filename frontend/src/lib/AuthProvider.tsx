@@ -4,6 +4,7 @@ import { api, setAuthTokenGetter } from "./api";
 const domain = "us-west-1rxv8v92ch.auth.us-west-1.amazoncognito.com";
 const clientId = "7nr3tc2v2j0ga1jiclbpk9hf1u";
 const redirectUri = import.meta.env.VITE_REDIRECT_URI;
+const API_BASE = (typeof window !== "undefined" && window.__ENV?.API_BASE_URL) || import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 const loginUrl =
   `https://${domain}/login/continue?` +
   `client_id=${clientId}` +
@@ -100,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function exchangeCode(code: string) {
     try {
       console.log("Exchanging code...");
-      const res = await fetch("http://localhost:8080/auth/exchange", {
+      const res = await fetch(`${API_BASE}/auth/exchange`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code }),

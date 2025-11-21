@@ -59,9 +59,18 @@ public class ListingController {
   // Get Listing
     // Get list of listings from a search
   @GetMapping("api/listings/search")
-  public ResponseEntity<?> getListings(@RequestParam String keyWord, Category category){
+  public ResponseEntity<?> getListings(
+        @RequestParam String keyWord,
+        @RequestParam(required = false) Category category,
+        @RequestParam(required = false) Double min,
+        @RequestParam(required = false) Double max) {
+    
+    double minValue = (min != null) ? min : 0;
+    double maxValue = (max != null) ? max : Double.MAX_VALUE;
+    
+    System.out.println("param"+keyWord+category+min+max);
     try {
-      ListingsResult listingsResult = listingService.searchListings(keyWord, category);
+      ListingsResult listingsResult = listingService.searchListings(keyWord, category, minValue, maxValue);
       return ResponseEntity.status(200).body(listingsResult);
     } catch (IllegalArgumentException e) { // if no listing is found
         return ResponseEntity.badRequest().body(e.getMessage());
@@ -97,7 +106,6 @@ public class ListingController {
     }
   }
 
-
   // Update Listing information (exluding image)
   @PatchMapping("api/listings/{listingId}") 
   public ResponseEntity<?> updateListing(
@@ -115,8 +123,8 @@ public class ListingController {
       return ResponseEntity.internalServerError().body("An unexpected error occured" + e.getMessage());
     }
   }
-  // Upload Image
 
+  // Upload Image
   @PostMapping("api/listings/{listingId}/upload")
   public ResponseEntity<?> upload(
                     @PathVariable Long listingId,
@@ -125,8 +133,8 @@ public class ListingController {
     String CogId =  jwt.getClaim("sub");
     Long userId = userService.getUserId(CogId) ;
     try{
-      Listing updatedListing = listingService.uploadImage(image,listingId,userId);
-      return ResponseEntity.status(200).body(updatedListing);
+      String url = listingService.uploadImage(image,listingId,userId);
+      return ResponseEntity.status(200).body(url);
     } catch (IllegalArgumentException e){
         return ResponseEntity.badRequest().body(e.getMessage());
     } catch (Exception e) {

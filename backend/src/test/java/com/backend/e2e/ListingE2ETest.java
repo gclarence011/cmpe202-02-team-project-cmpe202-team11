@@ -110,8 +110,7 @@ public class ListingE2ETest {
         .when()
             .post(baseUrl + "/" + test_listing.getId() + "/upload")
         .then()
-            .statusCode(200)
-            .body("photos.size()", equalTo(1));
+            .statusCode(200);
     }
 
     @Test

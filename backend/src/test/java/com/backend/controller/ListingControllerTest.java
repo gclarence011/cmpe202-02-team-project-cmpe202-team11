@@ -215,10 +215,10 @@ public class ListingControllerTest {
     @Test
     void testSearchListings_Success() {
         ListingsResult result = new ListingsResult();
-        when(listingService.searchListings("bike", Category.ELECTRONICS))
+        when(listingService.searchListings("bike", Category.ELECTRONICS,0.0,100.0))
                 .thenReturn(result);
 
-        ResponseEntity<?> response = listingController.getListings("bike", Category.ELECTRONICS);
+        ResponseEntity<?> response = listingController.getListings("bike", Category.ELECTRONICS,0.0,100.0);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(result, response.getBody());
@@ -227,10 +227,10 @@ public class ListingControllerTest {
     // ❌ test searchListings no result
     @Test
     void testSearchListings_NotFound() {
-        when(listingService.searchListings("bike", Category.ELECTRONICS))
+        when(listingService.searchListings("bike", Category.ELECTRONICS,0.0,100.0))
                 .thenThrow(new IllegalArgumentException("No listings found"));
 
-        ResponseEntity<?> response = listingController.getListings("bike", Category.ELECTRONICS);
+        ResponseEntity<?> response = listingController.getListings("bike", Category.ELECTRONICS,0.0,100.0);
 
         assertEquals(400, response.getStatusCode().value());
         assertEquals("No listings found", response.getBody());
@@ -250,15 +250,14 @@ public class ListingControllerTest {
         MockMultipartFile file = new MockMultipartFile(
                 "file", "image.jpg", "image/jpeg", "image-content".getBytes()
         );
-        Listing updatedListing = new Listing();
         when(listingService.uploadImage(any(MultipartFile.class), any(Long.class), any(Long.class)))
-                .thenReturn(updatedListing);
+                .thenReturn("url");
 
         Long listingId = 1L;
         ResponseEntity<?> response = listingController.upload(listingId, file, fakeJwt); 
 
         assertEquals(200, response.getStatusCode().value());
-        assertEquals(updatedListing, response.getBody());
+        assertEquals("url", response.getBody());
     }
 
     // ❌ test upload endpoint IllegalArgumentException handling

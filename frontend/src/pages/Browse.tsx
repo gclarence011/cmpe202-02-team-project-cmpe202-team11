@@ -116,8 +116,7 @@ const DEMO: Listing[] = [
     category: "Electronics",
   },
 ];
-
-const CATEGORIES = ["Electronics", "Books", "Home", "Accessories", "Clothing"];
+const CATEGORIES = ["ELECTRONICS", "BOOKS", "FURNITURE", "OTHER"];
 
 export default function Browse() {
   const [items, setItems] = useState<Listing[]>([]);

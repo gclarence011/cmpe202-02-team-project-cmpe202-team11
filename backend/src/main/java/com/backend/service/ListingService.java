@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.io.IOException;
+import java.util.Objects;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
 import com.backend.model.Listing;
 import com.backend.model.Status;
 import com.backend.model.User;
@@ -41,18 +43,14 @@ public class ListingService {
 
   // Create listing
   public Listing createListing(Long userId){
-    // Get the user creating the listing 
-    System.out.println("find user");
-    User seller = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException( "User not found"));
-    System.out.println("user found");
+    Long safeUserId = Objects.requireNonNull(userId, "userId cannot be null");
+    User seller = userRepository.findById(safeUserId).orElseThrow(() -> new IllegalArgumentException( "User not found"));
     Listing listing = new Listing();
-    System.out.println("Listing created");
-    // Set the seller 
     listing.setSeller(seller);
+
     // Save into database
     try{
       listingRepository.save(listing);
-      System.out.println("Creating listing" + listing.getTitle()); // comments
       return listing;
     } catch (DataIntegrityViolationException e) {
         throw new IllegalArgumentException("Invalid listing data");
@@ -63,9 +61,10 @@ public class ListingService {
 
   // Get Listing from ID
   public Listing getListing(Long id){
+    Long safeId = Objects.requireNonNull(id, "userId cannot be null");
     Listing listing;
     try{
-       listing = listingRepository.findById(id).orElseThrow(() -> new IllegalArgumentException( "Listing not found"));
+       listing = listingRepository.findById(safeId).orElseThrow(() -> new IllegalArgumentException( "Listing not found"));
     }  catch (IllegalArgumentException e){
         throw e;
     }  catch (Exception e) {
@@ -73,18 +72,15 @@ public class ListingService {
     }
     return listing;
   }
-//----------------To Do --------------------------
-    // batch search (to get list of listings) (TODO: Filter not implemented)
-  public ListingsResult searchListings(String key, Category category){
-    ListingsResult listingsResult = new ListingsResult(listingRepository.findAll());
-    
-    // query listing 
-    // if empty
+  //  search (to get list of listings) (
+  public ListingsResult searchListings(String key, Category category, double min, double max){
+    ListingsResult listingsResult = new ListingsResult(listingRepository.searchByCriteria(key,min,max,category));
     return listingsResult;
   }
 
   public ListingsResult userListings(Long userId){ 
-    User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    Long safeUserId = Objects.requireNonNull(userId, "userId cannot be null");
+    User user = userRepository.findById(safeUserId).orElseThrow(() -> new IllegalArgumentException("User not found"));
     ListingsResult listingsResult = new ListingsResult(listingRepository.findAllBySellerId(user.getID()));
     return listingsResult;
   }
@@ -92,8 +88,11 @@ public class ListingService {
   // update listing
     // individual listing
   public Listing updateListing(Long listingId, Map<String, Object> updates, Long userId){
-    Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
-    User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    Long safeListingId = Objects.requireNonNull(listingId, "userId cannot be null");
+    Long safeUserId = Objects.requireNonNull(userId, "userId cannot be null");
+
+    Listing listing = listingRepository.findById(safeListingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
+    User user = userRepository.findById(safeUserId).orElseThrow(() -> new IllegalArgumentException("User not found"));
     // Make sure that the user is the seller of the listing
     if (listing.getSeller() != user) { 
       throw new IllegalArgumentException("User is not the seller");
@@ -106,7 +105,16 @@ public class ListingService {
       listing.setDescription((String) updates.get("description"));
     }
     if (updates.containsKey("photos")){
-      List<String> newPhotoList = (List<String>) updates.get("photos");
+      Object rawPhotos = updates.get("photos");
+      List<String> newPhotoList = new ArrayList<>();
+
+      if (rawPhotos instanceof List<?>) {
+        for (Object item : (List<?>) rawPhotos) {
+          if (item instanceof String) {
+            newPhotoList.add((String) item);
+          }
+        }
+      }
       List<String> currentPhotoList = listing.getPhotos();
 
       // Delete photos not in the new list
@@ -151,9 +159,12 @@ public class ListingService {
   }
 
   // Upload photo
-  public Listing uploadImage(MultipartFile image, Long listingId, Long userId){
-    Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
-    User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+  public String uploadImage(MultipartFile image, Long listingId, Long userId){
+    Long safeListingId = Objects.requireNonNull(listingId, "userId cannot be null");
+    Long safeUserId = Objects.requireNonNull(userId, "userId cannot be null");
+
+    Listing listing = listingRepository.findById(safeListingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
+    User user = userRepository.findById(safeUserId).orElseThrow(() -> new IllegalArgumentException("User not found"));
     // Make sure that the user is the seller of the listing
     if (listing.getSeller() != user) { 
       throw new IllegalArgumentException("User is not the seller");
@@ -173,13 +184,16 @@ public class ListingService {
     photos.add(imageURL);
     listing.setPhotos(photos);
     listingRepository.save(listing);
-    return listing;
+    return imageURL;
   }
 
   // Remove Listing (
-  public void deleteListing(Long listingID, Long userId){
-    Listing listing = listingRepository.findById(listingID).orElseThrow(() -> new RuntimeException("Listing not found"));
-    User user = userRepository.findById(userId).orElse(null);
+  public void deleteListing(Long listingId, Long userId){
+    Long safeListingId = Objects.requireNonNull(listingId, "userId cannot be null");
+    Long safeUserId = Objects.requireNonNull(userId, "userId cannot be null");
+
+    Listing listing = listingRepository.findById(safeListingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
+    User user = userRepository.findById(safeUserId).orElseThrow(() -> new IllegalArgumentException("User not found"));
     if (listing.getSeller() != user) {
       throw new IllegalArgumentException("Only Listing Seller can delete");
     }
@@ -199,8 +213,13 @@ public class ListingService {
 
   // Flag listing
   public Listing flagListing(Long listingId, Long adminId){
-    Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new RuntimeException("Listing not found"));
-    User admin = userRepository.findById(adminId).orElse(null);
+
+    Long safeListingId = Objects.requireNonNull(listingId, "userId cannot be null");
+    Long safeAdminId = Objects.requireNonNull(adminId, "userId cannot be null");
+
+    Listing listing = listingRepository.findById(safeListingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
+    User admin = userRepository.findById(safeAdminId).orElse(null);
+
     if (admin.getRole() != Role.ADMIN){
       throw new IllegalArgumentException("Only Admin can flag");
     }

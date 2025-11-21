@@ -51,7 +51,7 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
          "(LOWER(l.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
          "LOWER(l.description) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
          "AND l.price >= :minPrice AND l.price <= :maxPrice " +
-         "AND l.category = :category " +
+         "AND (:category IS NULL OR l.category = :category) " +
          "AND l.status = 'OPEN'")
   List<Listing> searchByCriteria(
       @Param("keyword") String keyword,

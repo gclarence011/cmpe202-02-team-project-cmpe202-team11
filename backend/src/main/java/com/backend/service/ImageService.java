@@ -2,7 +2,6 @@ package com.backend.service;
 
 import java.io.IOException;
 
-import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;

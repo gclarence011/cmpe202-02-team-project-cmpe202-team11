@@ -78,6 +78,16 @@ class ListingServiceTest {
         assertEquals("User not found", e.getMessage());
     }
 
+    // ---------------- searchListings() ------------
+    @Test
+    void testSearchListings_Success() {
+        when(listingRepository.searchByCriteria("key",0.0,100.0,Category.ELECTRONICS)).thenReturn(List.of(mockListing));
+
+        ListingsResult result = listingService.searchListings("key",Category.ELECTRONICS,0.0,100.0);
+
+        assertEquals(mockListingsResult.getListings(), result.getListings());
+    }
+
     // ---------------- getListing() ----------------
     @Test
     void testGetListing_Success() {
@@ -186,11 +196,10 @@ class ListingServiceTest {
         when(listingRepository.save(any(Listing.class))).thenReturn(mockListing);
 
         // Act
-        Listing result = listingService.uploadImage(mockImage, listingId, userId);
+        String result = listingService.uploadImage(mockImage, listingId, userId);
 
         // Assert
-        assertEquals(mockListing, result);
-        assertTrue(mockListing.getPhotos().contains("https://s3.amazonaws.com/bucket/test.jpg"));
+        assertEquals("https://s3.amazonaws.com/bucket/test.jpg", result);
         verify(imageService, times(1)).uploadImage(mockImage);
         verify(listingRepository, times(1)).save(mockListing);
     }

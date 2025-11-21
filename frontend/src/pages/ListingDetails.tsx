@@ -26,7 +26,7 @@ export default function ListingDetails(){
 
   async function markReport(){
     if(!id) return;
-    await api.patch(routes.listings.markSold(id)); // adjust if your backend uses PATCH /:id/mark
+    await api.patch(routes.listings.markSold(id)); 
     navigate("/");
   }
 
@@ -42,7 +42,7 @@ export default function ListingDetails(){
         <p className="text-gray-700">{item.description}</p>
         <div className="flex gap-2">
           <button onClick={startChat} className="rounded-lg px-3 py-2 border bg-black text-white">Chat with Seller</button>
-          <button onClick={markReport} className="rounded-lg px-3 py-2 border">Mark as Sold/Report</button>
+          <button onClick={markReport} className="rounded-lg px-3 py-2 border">Report</button>
         </div>
       </div>
     </section>

@@ -250,15 +250,14 @@ public class ListingControllerTest {
         MockMultipartFile file = new MockMultipartFile(
                 "file", "image.jpg", "image/jpeg", "image-content".getBytes()
         );
-        Listing updatedListing = new Listing();
         when(listingService.uploadImage(any(MultipartFile.class), any(Long.class), any(Long.class)))
-                .thenReturn(updatedListing);
+                .thenReturn("url");
 
         Long listingId = 1L;
         ResponseEntity<?> response = listingController.upload(listingId, file, fakeJwt); 
 
         assertEquals(200, response.getStatusCode().value());
-        assertEquals(updatedListing, response.getBody());
+        assertEquals("url", response.getBody());
     }
 
     // ❌ test upload endpoint IllegalArgumentException handling

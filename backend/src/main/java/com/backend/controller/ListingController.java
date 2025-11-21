@@ -106,7 +106,6 @@ public class ListingController {
     }
   }
 
-
   // Update Listing information (exluding image)
   @PatchMapping("api/listings/{listingId}") 
   public ResponseEntity<?> updateListing(
@@ -124,8 +123,8 @@ public class ListingController {
       return ResponseEntity.internalServerError().body("An unexpected error occured" + e.getMessage());
     }
   }
-  // Upload Image
 
+  // Upload Image
   @PostMapping("api/listings/{listingId}/upload")
   public ResponseEntity<?> upload(
                     @PathVariable Long listingId,
@@ -134,8 +133,8 @@ public class ListingController {
     String CogId =  jwt.getClaim("sub");
     Long userId = userService.getUserId(CogId) ;
     try{
-      Listing updatedListing = listingService.uploadImage(image,listingId,userId);
-      return ResponseEntity.status(200).body(updatedListing);
+      String url = listingService.uploadImage(image,listingId,userId);
+      return ResponseEntity.status(200).body(url);
     } catch (IllegalArgumentException e){
         return ResponseEntity.badRequest().body(e.getMessage());
     } catch (Exception e) {

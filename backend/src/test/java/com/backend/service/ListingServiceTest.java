@@ -196,11 +196,10 @@ class ListingServiceTest {
         when(listingRepository.save(any(Listing.class))).thenReturn(mockListing);
 
         // Act
-        Listing result = listingService.uploadImage(mockImage, listingId, userId);
+        String result = listingService.uploadImage(mockImage, listingId, userId);
 
         // Assert
-        assertEquals(mockListing, result);
-        assertTrue(mockListing.getPhotos().contains("https://s3.amazonaws.com/bucket/test.jpg"));
+        assertEquals("https://s3.amazonaws.com/bucket/test.jpg", result);
         verify(imageService, times(1)).uploadImage(mockImage);
         verify(listingRepository, times(1)).save(mockListing);
     }

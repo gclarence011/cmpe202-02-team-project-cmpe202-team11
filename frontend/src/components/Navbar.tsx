@@ -14,7 +14,7 @@ export default function Navbar(){
         </Link>
         <nav className="ml-auto flex gap-1 sm:gap-2">
           <NavLink to="/" className={({isActive})=>nav(isActive)} end>Browse</NavLink>
-          <NavLink to="/create" className={({isActive})=>nav(isActive)}>Create</NavLink>
+          <NavLink to="/mylistings" className={({isActive})=>nav(isActive)}>MyListing</NavLink>
           <NavLink to="/chats" className={({isActive})=>nav(isActive)}>Chats</NavLink>
           <NavLink to="/admin" className={({isActive})=>nav(isActive)}>Admin</NavLink>
           {user ? (

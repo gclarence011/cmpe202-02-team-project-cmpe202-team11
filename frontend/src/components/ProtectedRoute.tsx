@@ -1,14 +1,8 @@
 import { useEffect } from "react";
 import { useAuth } from "@/lib/AuthProvider";
-import { Navigate } from "react-router-dom";
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, tokens, loading, login } = useAuth();
-
-  // Show loading while AuthProvider is initializing
-  if (loading) {
-    return <div>Loading authentication...</div>;
-  }
+  const { tokens, loading, login } = useAuth();
 
   // Only trigger login if loading is done and no tokens exist
   useEffect(() => {

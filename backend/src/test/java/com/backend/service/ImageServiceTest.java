@@ -20,6 +20,7 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectResponse;
 
 @ExtendWith(MockitoExtension.class)
@@ -77,11 +78,10 @@ class ImageServiceTest {
     void deleteImage_ShouldCallDeleteObject() {
         String imageUrl = "https://test-bucket.s3.us-east-2.amazonaws.com/some-key.jpg";
 
-        when(s3Client.deleteObject(any(Consumer.class))).thenReturn(DeleteObjectResponse.builder().build());
-
+        when(s3Client.deleteObject(ArgumentMatchers.<Consumer<DeleteObjectRequest.Builder>>any())).thenReturn(DeleteObjectResponse.builder().build());
         assertDoesNotThrow(() -> imageService.deleteImage(imageUrl));
 
-        verify(s3Client, times(1)).deleteObject(any(Consumer.class));
+        verify(s3Client, times(1)).deleteObject(ArgumentMatchers.<Consumer<DeleteObjectRequest.Builder>>any());
     }
 
     @Test
@@ -98,7 +98,7 @@ class ImageServiceTest {
     void deleteImage_ShouldThrowRuntimeException_WhenDeleteFails() {
         String imageUrl = "https://test-bucket.s3.us-east-2.amazonaws.com/some-key.jpg";
 
-        doThrow(new RuntimeException("fail")).when(s3Client).deleteObject(any(Consumer.class));
+        doThrow(new RuntimeException("fail")).when(s3Client).deleteObject((ArgumentMatchers.<Consumer<DeleteObjectRequest.Builder>>any()));
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> imageService.deleteImage(imageUrl));
         assertTrue(ex.getMessage().contains("Failed to delete image"));

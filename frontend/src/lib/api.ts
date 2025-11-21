@@ -12,11 +12,8 @@ export const api = axios.create({ baseURL: API_BASE.replace(/\/$/, ""), timeout:
 
 export const routes = {
   auth: { signup:"/auth/signup", login:"/auth/login", logout:"/auth/logout", me:"/auth/me", refresh:"/auth/refresh" }, // Not implemented
-  users: { public:(id:string)=>`/users/${id}`, me:"/users/me", saved:"/users/me/saved", saveToggle:(id:string)=>`/users/me/saved/${id}` }, // Does not exist
-  listings: { list:"api/listings/search", detail:(id:string)=>`api/listings/${id}`, create:"/listings", update:(id:string)=>`/listings/${id}`, remove:(id:string)=>`/listings/${id}`, markSold:(id:string)=>`/listings/${id}/mark` },
-  search: { q:"/search", categories:"/browse/categories", category:(slug:string)=>`/browse/category/${slug}`, recommended:"/browse/recommend" },
+  listings: { mylist:"api/listings/user", list:"api/listings/search", detail:(id:string)=>`api/listings/${id}`, create:"api/listings/create", update:(id:string)=>`api/listings/${id}`, upload:(id:string)=>`api/listings/${id}/upload`, remove:(id:string)=>`api/listings/delete/${id}`, markSold:(id:string)=>`/listings/${id}/mark` },
   chats: { mine:"/chats", start:(listingId:string)=>`/chats/listing/${listingId}`, room:(chatId:string)=>`/chats/${chatId}`, send:(chatId:string)=>`/chats/${chatId}/msg` },
-  orders: { create:"/orders", detail:(id:string)=>`/orders/${id}`, mine:"/orders" }
 } as const;
 
 api.interceptors.request.use((config) => {

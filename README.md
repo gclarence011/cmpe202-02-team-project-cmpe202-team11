@@ -23,11 +23,21 @@ Steps to Run
   git clone https://github.com/gopinathsjsu/cmpe202-02-team-project-cmpe202-team11.git
   cd cmpe202-02-team-project-cmpe202-team11
 ```
-2. Configure Application Properties (TBD - need to integrate with AWS Postgress)  
+2. Configure Application Properties   
    a. Create a copy of application-example.properties in src/main/resources/
    b. Rename the file to application.properties (it should be in src/main/resources/application.properties)  
-   c. Set the username and password for the db and more  
-3. Go to Backend Folder
+   c. Set your secrets
+   d. Set your frontend url
+   ```application.properties 
+   # in backend/src/main/resources/application.properties
+	spring.application.name=backend
+	# Use http://localhost:5173 for dev
+	# Use http://localhost:3000 for docker
+	frontend.url=http://localhost:5173 #<--- change this 
+   #---- more code bellow ----
+   ```
+   
+4. Go to Backend Folder
 ```bash
 	cd backend
 ```
@@ -68,7 +78,12 @@ Steps to Run
 ```
 2. Configure .env frontend url (TBD - need to integrate with AWS Postgress)  
    a. Go to.env in frontend  
-   b. Set the frontend url for the url redirect  
+   b. Set the frontend url for the url redirect to http://localhost:5173/
+   ```.env 
+   # in frontend/.env
+	VITE_REDIRECT_URI=http://localhost:5173 #<--- change this 
+	VITE_API_BASE_URL=http://localhost:8080
+   ```
    
 4. Go to Frontend Folder
 ```bash
@@ -98,8 +113,22 @@ Prerequisites
   ```
 
 Steps to Run  
-  1.	Go to the project root file (where the Docker-Compose.yml is located)  
-  2. Build and Start Containers  
+  1. Update the frontend env and backend application.properties frontend url to http://localhost:3000.
+  ```.env 
+   # in frontend/.env
+	VITE_REDIRECT_URI=http://localhost:3000 #<--- change this 
+	VITE_API_BASE_URL=http://localhost:8080
+  ```
+  ```application.properties 
+   # in backend/src/main/resources/application.properties
+	spring.application.name=backend
+	# Use http://localhost:5173 for dev
+	# Use http://localhost:3000 for docker
+	frontend.url=http://localhost:3000 #<--- change this 
+   #---- more code bellow ----
+   ```
+  3. Go to the project root file (where the Docker-Compose.yml is located)  
+  4. Build and Start Containers  
 Run the following command to build (if needed) and start your containers:  
   ```
   docker-compose up --build
@@ -109,16 +138,24 @@ Run the following command to build (if needed) and start your containers:
      b. Backend: http://localhost:8080.
      
 # Backend API List
+Health
+- GET /health -> return "Backend is running"
+
 Auth  
 - POST  /auth/exchange -> exchange code from login to token
+
+NLP
+- POST /api/search/nlp -> Return list of listings
+- GET /api/search/health" -> Return {"status": "NLP Search Service is running"}
   
 Listing
 - GET /api/listings/hello  -> return hello from backend
 - POST /api/listings/create -> create an empty listing only
-- GET /api/listings/search -> Input( keyWord, Category), Return list of listings (not implemented)
+- GET /api/listings/search -> Return list of listings
 - GET /api/listings/{listingId} -> Return listing 
 - GET /api/listings/user -> Return list of seller listing
-- PATCH /api/listings/{listingId} -> Input(update), Return updated listing (cannot upload photo, only delete)
-- POST /api/listings/{listingId}/upload -> Input(photo), Return updated listing
+- PATCH /api/listings/{listingId} -> Input(update), Return updated listing
+- POST /api/listings/{listingId}/upload -> Input(photo), Return updated photo url
 - PATCH /api/listings/{listingID}/flag -> Return updated listing
 - DELETE /api/listings/delete/{listingID} -> Return "Deleted Successfully"
+

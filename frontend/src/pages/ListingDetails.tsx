@@ -8,6 +8,7 @@ type Listing = { id:string; title:string; price:number; description?:string; pho
 
 export default function ListingDetails(){
   const { id } = useParams<{id:string}>();
+  const { ownerId } = useParams<{ownerId:string}>();
   const [item,setItem]=useState<Listing|null>(null);
   const [loading,setLoading]=useState(true);
   const navigate = useNavigate();
@@ -19,9 +20,15 @@ export default function ListingDetails(){
 
   async function startChat(){
     if(!id) return;
-    const r = await api.post(routes.chats.start(id));
-    const chatId = r.data?.id || r.data?.chatId;
-    if(chatId) navigate(`/chats/${chatId}`);
+    navigate("/chats", {
+      state: {
+        prefill: {
+          recipient: ownerId,
+          listing: id,
+          message: "",
+        },
+      },
+    })
   }
 
   async function markReport(){

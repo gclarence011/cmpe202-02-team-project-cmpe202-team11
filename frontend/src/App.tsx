@@ -4,7 +4,6 @@ import Browse from "@/pages/Browse";
 import ListingDetails from "@/pages/ListingDetails";
 import CreateListing from "@/pages/EditListing";
 import Chat from "@/pages/Chat";
-import ChatRoom from "@/pages/ChatRoom";
 import AdminDashboard from "@/pages/AdminDashboard";
 import ReviewQueue from "@/pages/ReviewQueue";
 import NotFound from "@/pages/NotFound";
@@ -23,7 +22,6 @@ export default function App(){ // removing ProtectedRoutes</ProtectedRoute>
           <Route path="/listings/:id/edit" element={<ProtectedRoute><EditListing/></ProtectedRoute> } />
           <Route path="/mylistings" element={<ProtectedRoute><UserListings/></ProtectedRoute> } />
           <Route path="/chats" element={ <ProtectedRoute><Chat/></ProtectedRoute>  } />
-          <Route path="/chats/:id" element={ <ProtectedRoute><ChatRoom/></ProtectedRoute>  } />
           <Route path="/admin" element={ <ProtectedRoute><AdminDashboard/></ProtectedRoute> } />
           <Route path="/admin/review" element={ <ProtectedRoute><ReviewQueue/></ProtectedRoute>  } />
           <Route path="*" element={<NotFound/>} />

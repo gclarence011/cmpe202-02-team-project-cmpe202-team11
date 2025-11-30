@@ -227,5 +227,21 @@ public class ListingService {
 
     return listingRepository.save(listing);
   }
+
+  public Listing unflagListing(Long listingId, Long adminId){
+
+    Long safeListingId = Objects.requireNonNull(listingId, "userId cannot be null");
+    Long safeAdminId = Objects.requireNonNull(adminId, "userId cannot be null");
+
+    Listing listing = listingRepository.findById(safeListingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
+    User admin = userRepository.findById(safeAdminId).orElse(null);
+
+    if (admin.getRole() != Role.ADMIN){
+      throw new IllegalArgumentException("Only Admin can unflag");
+    }
+    listing.setStatus(Status.OPEN);
+
+    return listingRepository.save(listing);
+  }
   
 }

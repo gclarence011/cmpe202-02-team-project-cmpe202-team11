@@ -157,6 +157,21 @@ public class ListingController {
     }
   }
 
+  // Unflag Listings
+  @PatchMapping("api/listings/{listingID}/unflag")
+  public ResponseEntity<?> unflagListing(@PathVariable Long listingID,@AuthenticationPrincipal Jwt jwt){
+    String CogId =  jwt.getClaim("sub");
+    Long adminId = userService.getUserId(CogId) ;
+    try{
+      Listing listing = listingService.unflagListing(listingID, adminId);
+      return ResponseEntity.status(200).body(listing);
+    } catch (IllegalArgumentException e){
+        return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e){
+        return ResponseEntity.internalServerError().body("An unexpected error occured" + e.getMessage());
+    }
+  }
+
   // Delete Listing
   @DeleteMapping("api/listings/delete/{listingID}")
   public ResponseEntity<String> deleteListing(@PathVariable Long listingID,@AuthenticationPrincipal Jwt jwt){

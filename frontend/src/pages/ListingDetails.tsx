@@ -20,6 +20,7 @@ export default function ListingDetails(){
 
   async function startChat(){
     if(!id) return;
+    console.log(ownerId, id);
     navigate("/chats", {
       state: {
         prefill: {

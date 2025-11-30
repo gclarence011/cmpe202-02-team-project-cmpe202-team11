@@ -7,11 +7,11 @@ import { api, routes } from "@/lib/api";
 
 type Message = {
   id: number;
-  sender: string;
-  receiver: string;
-  listing: string;
-  message: string;
-  timestamp: string;
+  sender: {id: string, name: string};
+  receiver: {id: string, name: string};
+  listing: {id: string, title: string};
+  content: string;
+  time: string;
 };
 
 export default function Chat() {
@@ -41,27 +41,30 @@ export default function Chat() {
   }, [location.state]);
 
   useEffect(() => {
-    fetch(routes.chats.list)
-      .then((res) => res.json())
-      .then((data: Message[]) => {
-        const sorted = data.sort((a: Message, b: Message) =>
-          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-        );
-        setMessages(sorted);
+    api.get(routes.chats.list)
+      //.then((resp) => console.log(resp.data));
+
+      .then((resp) => {
+        /* const sorted = resp.data.sort((a: Message, b: Message) =>
+          new Date(b.time).getTime() - new Date(a.time).getTime()
+        ); */
+        //setMessages(sorted);
+        setMessages(resp.data);
       });
   }, []);
 
   const sendMessage = () => {
-    fetch(routes.chats.list, {
+    api.post(routes.chats.list, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        sender: composeData.sender,
-        receiver: composeData.recipient,
-        listing: composeData.listing,
+        senderId: composeData.sender,
+        receiverId: composeData.recipient,
+        listingId: composeData.listing,
         message: composeData.message,
       }),
-    }).then(() => {
+    }).then((resp) => {
+      console.log(resp.data)
       setComposeOpen(false);
       setComposeData({ recipient: "", listing: "", message: "" });
     });
@@ -78,9 +81,10 @@ export default function Chat() {
             onClick={() => setExpandedId(expandedId === msg.id ? null : msg.id)}
           >
             <CardContent className="p-4">
-              <div className="font-semibold text-xl">{msg.sender}</div>
-              <div className="text-sm opacity-70">{msg.timestamp}</div>
-              <div className="mt-2 font-medium">Listing: {msg.listing}</div>
+              <div className="font-semibold text-xl">{msg.sender.name}</div>
+              <div className="font-semibold text-xl">{msg.receiver.name}</div>
+              <div className="text-sm opacity-70">{msg.time}</div>
+              <div className="mt-2 font-medium">Listing: {msg.listing.title}</div>
 
               {expandedId === msg.id && (
                 <motion.div
@@ -88,11 +92,11 @@ export default function Chat() {
                   animate={{ opacity: 1 }}
                   className="mt-4"
                 >
-                  <p className="mb-4">{msg.message}</p>
+                  <p className="mb-4">{msg.content}</p>
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setComposeData({ recipient: msg.sender, listing: msg.listing, message: "" });
+                      setComposeData({ recipient: msg.sender.id, listing: msg.listing.id, message: "" });
                       setComposeOpen(true);
                     }}
                   >

@@ -13,6 +13,7 @@ import com.backend.repository.UserRepository;
 import com.backend.repository.ListingRepository;
 
 import java.util.List;
+import java.time.*;
 
 @Service
 public class ChatService {
@@ -32,6 +33,7 @@ public class ChatService {
         User receiver = userRepository.findById(receiverId).orElseThrow(() -> new IllegalArgumentException( "Receiver not found"));
         Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException( "Listing not found"));
         Chat chat = new Chat();
+        chat.setTime(LocalDateTime.now());
         chat.setSender(sender);
         chat.setReceiver(receiver);
         chat.setListing(listing);

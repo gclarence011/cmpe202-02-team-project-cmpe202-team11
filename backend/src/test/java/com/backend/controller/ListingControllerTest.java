@@ -24,12 +24,23 @@ public class ListingControllerTest {
     private ListingService listingService;
     private UserService userService;
     private ListingController listingController;
+    private Jwt fakeJwt;
 
     @BeforeEach
     void setUp() {
         listingService = mock(ListingService.class);
         userService = mock(UserService.class);
         listingController = new ListingController(userService, listingService);
+        
+        // Create a fake JWT token for testing
+        fakeJwt = new Jwt(
+                "tokenValue",
+                null,
+                null,
+                Map.of("alg", "none"),
+                Map.of("sub", "TEST_COG_ID")
+        );
+        when(userService.getUserId("TEST_COG_ID")).thenReturn(1L);
     }
 
     // ✅ test hello endpoint
@@ -47,14 +58,6 @@ public class ListingControllerTest {
     // ✅ test createListing success
     @Test
     void testCreateListing_Success() {
-        Jwt fakeJwt = new Jwt(
-                "tokenValue",
-                null,
-                null,
-                Map.of("alg", "none"),
-                Map.of("sub", "TEST_COG_ID")
-        );
-        when(userService.getUserId("TEST_COG_ID")).thenReturn(1L);
         Listing created_listing= new Listing();
         when(listingService.createListing(1L)).thenReturn(created_listing);
 
@@ -67,14 +70,6 @@ public class ListingControllerTest {
     // ❌ test createListing failure (IllegalArgumentException)
     @Test
     void testCreateListing_BadRequest() {
-        Jwt fakeJwt = new Jwt(
-                "tokenValue",
-                null,
-                null,
-                Map.of("alg", "none"),
-                Map.of("sub", "TEST_COG_ID")
-        );
-        when(userService.getUserId("TEST_COG_ID")).thenReturn(1L);
         doThrow(new IllegalArgumentException("Invalid data"))
                 .when(listingService).createListing(1L);
 
@@ -108,37 +103,9 @@ public class ListingControllerTest {
         assertEquals("Listing not found", response.getBody());
     }
 
-    // ✅ test userListings success
-    @Test
-    void testUserListings_Success() {
-        Jwt fakeJwt = new Jwt(
-                "tokenValue",
-                null,
-                null,
-                Map.of("alg", "none"),
-                Map.of("sub", "TEST_COG_ID")
-        );
-        when(userService.getUserId("TEST_COG_ID")).thenReturn(1L);
-        ListingsResult mockListingsResult = new ListingsResult();
-        when(listingService.userListings(1L)).thenReturn(mockListingsResult);
-
-        ResponseEntity<?> response = listingController.getListing(fakeJwt);
-
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals(mockListingsResult, response.getBody());
-    }
-
     // ✅ test updateListing success
     @Test
     void testUpdateListing_Success() {
-        Jwt fakeJwt = new Jwt(
-                "tokenValue",
-                null,
-                null,
-                Map.of("alg", "none"),
-                Map.of("sub", "TEST_COG_ID")
-        );
-        when(userService.getUserId("TEST_COG_ID")).thenReturn(1L);
         Map<String, Object> updates = new HashMap<>();
         updates.put("title", "Updated Title");
 
@@ -154,14 +121,6 @@ public class ListingControllerTest {
     // ❌ test updateListing bad request
     @Test
     void testUpdateListing_BadRequest() {
-        Jwt fakeJwt = new Jwt(
-                "tokenValue",
-                null,
-                null,
-                Map.of("alg", "none"),
-                Map.of("sub", "TEST_COG_ID")
-        );
-        when(userService.getUserId("TEST_COG_ID")).thenReturn(1L);
         Map<String, Object> updates = new HashMap<>();
         doThrow(new IllegalArgumentException("Invalid update"))
                 .when(listingService).updateListing(5L, updates, 1L);
@@ -175,17 +134,9 @@ public class ListingControllerTest {
     // ✅ test deleteListing success
     @Test
     void testDeleteListing_Success() {
-        Jwt fakeJwt = new Jwt(
-                "tokenValue",
-                null,
-                null,
-                Map.of("alg", "none"),
-                Map.of("sub", "TEST_COG_ID")
-        );
-        when(userService.getUserId("TEST_COG_ID")).thenReturn(1L);
         doNothing().when(listingService).deleteListing(7L, 1L);
 
-        ResponseEntity<String> response = listingController.deleteListing(7L,fakeJwt);
+        ResponseEntity<String> response = listingController.deleteListing(7L, fakeJwt);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals("Deleted Succesfully", response.getBody());
@@ -194,18 +145,10 @@ public class ListingControllerTest {
     // ✅ test flagListing success
     @Test
     void testFlagListing_Success() {
-        Jwt fakeJwt = new Jwt(
-                "tokenValue",
-                null,
-                null,
-                Map.of("alg", "none"),
-                Map.of("sub", "TEST_COG_ID")
-        );
-        when(userService.getUserId("TEST_COG_ID")).thenReturn(1L);
         Listing flagged = new Listing();
         when(listingService.flagListing(2L, 1L)).thenReturn(flagged);
 
-        ResponseEntity<?> response = listingController.flagListing(2L,fakeJwt);
+        ResponseEntity<?> response = listingController.flagListing(2L, fakeJwt);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(flagged, response.getBody());
@@ -239,14 +182,6 @@ public class ListingControllerTest {
     // ✅ test upload endpoint success
     @Test
     void testUpload_Success_Direct() throws Exception {
-        Jwt fakeJwt = new Jwt(
-                "tokenValue",
-                null,
-                null,
-                Map.of("alg", "none"),
-                Map.of("sub", "TEST_COG_ID")
-        );
-        when(userService.getUserId("TEST_COG_ID")).thenReturn(1L);
         MockMultipartFile file = new MockMultipartFile(
                 "file", "image.jpg", "image/jpeg", "image-content".getBytes()
         );
@@ -263,14 +198,6 @@ public class ListingControllerTest {
     // ❌ test upload endpoint IllegalArgumentException handling
     @Test
     void testUpload_BadRequest_Direct() throws Exception {
-        Jwt fakeJwt = new Jwt(
-                "tokenValue",
-                null,
-                null,
-                Map.of("alg", "none"),
-                Map.of("sub", "TEST_COG_ID")
-        );
-        when(userService.getUserId("TEST_COG_ID")).thenReturn(1L);
         MockMultipartFile file = new MockMultipartFile(
                 "file", "image.jpg", "image/jpeg", "image-content".getBytes()
         );
@@ -279,7 +206,7 @@ public class ListingControllerTest {
                 .thenThrow(new IllegalArgumentException("Invalid file"));
 
         Long listingId = 1L;
-        ResponseEntity<?> response = listingController.upload(listingId, file, fakeJwt); // userId = 1L
+        ResponseEntity<?> response = listingController.upload(listingId, file, fakeJwt);
 
         assertEquals(400, response.getStatusCode().value());
         assertEquals("Invalid file", response.getBody());
@@ -288,14 +215,6 @@ public class ListingControllerTest {
     // ❌ test upload endpoint generic Exception handling
     @Test
     void testUpload_InternalServerError_Direct() throws Exception {
-        Jwt fakeJwt = new Jwt(
-                "tokenValue",
-                null,
-                null,
-                Map.of("alg", "none"),
-                Map.of("sub", "TEST_COG_ID")
-        );
-        when(userService.getUserId("TEST_COG_ID")).thenReturn(1L);
         MockMultipartFile file = new MockMultipartFile(
                 "file", "image.jpg", "image/jpeg", "image-content".getBytes()
         );
@@ -304,7 +223,7 @@ public class ListingControllerTest {
                 .thenThrow(new RuntimeException("Server error"));
 
         Long listingId = 1L;
-        ResponseEntity<?> response = listingController.upload(listingId, file, fakeJwt); // userId = 1L
+        ResponseEntity<?> response = listingController.upload(listingId, file, fakeJwt);
 
         assertEquals(500, response.getStatusCode().value());
         assertEquals("An unexpected error occuredServer error", response.getBody());

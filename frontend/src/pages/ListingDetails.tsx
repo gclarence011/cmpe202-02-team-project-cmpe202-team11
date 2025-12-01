@@ -17,6 +17,7 @@ export default function ListingDetails(){
   const { ownerId } = useParams<{ownerId:string}>();
   const [item,setItem]=useState<Listing|null>(null);
   const [loading,setLoading]=useState(true);
+  const [msg,setMsg]=useState<string>("");
   const navigate = useNavigate();
 
   useEffect(()=>{ (async()=>{
@@ -43,8 +44,13 @@ export default function ListingDetails(){
 
   async function markReport(){
     if(!id) return;
-    await api.patch(routes.listings.markSold(id)); 
-    navigate("/");
+    // Simplified: send a report without reason and show inline confirmation (no prompts)
+    try{
+      await api.post(routes.listings.report(id), {});
+      setMsg('Report submitted — thank you.');
+    }catch(err:any){
+      setMsg(err?.response?.data || err.message || 'Failed to submit report');
+    }
   }
 
   if(loading) return <p>Loading...</p>;
@@ -85,6 +91,7 @@ export default function ListingDetails(){
         <p className="text-xl">{"Seller: " + item.seller?.name}</p>
         <p className="text-xl">{"Description: "}</p>
         <p className="text-gray-700">{item.description}</p>
+        {msg && <div className="text-sm text-green-600">{msg}</div>}
         <div className="flex gap-2">
           <button onClick={startChat} className="rounded-lg px-3 py-2 border bg-black text-white">Chat with Seller</button>
           <button onClick={markReport} className="rounded-lg px-3 py-2 border">Report</button>

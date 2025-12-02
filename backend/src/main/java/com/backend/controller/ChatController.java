@@ -32,16 +32,15 @@ public class ChatController {
     }
 
     @GetMapping("chats")
-    public ResponseEntity<?> getChats(){
-        System.out.println("test1");
-        System.out.println(chatService.getChats());
-        return ResponseEntity.status(201).body(chatService.getChats());
+    public ResponseEntity<?> getChats(@AuthenticationPrincipal Jwt jwt){
+        String CogId =  jwt.getClaim("sub");
+        Long userId = userService.getUserId(CogId);
+        System.out.println(chatService.getChats(userId));
+        return ResponseEntity.status(201).body(chatService.getChats(userId));
     }
 
     @PostMapping("chats")
     public ResponseEntity<?> createChat(@RequestBody Map<String, Object> body, @AuthenticationPrincipal Jwt jwt){
-        System.out.println("POST1");
-
         String CogId =  jwt.getClaim("sub");
         Long senderId = userService.getUserId(CogId);
 
@@ -55,6 +54,8 @@ public class ChatController {
             String message = request.get("message").toString();
             if (receiverId.startsWith("\"")) {
                 receiverId = receiverId.substring(1, receiverId.length()-1);
+            }
+            if (listingId.startsWith("\"")) {
                 listingId = listingId.substring(1, listingId.length()-1);
             }
             message = message.substring(1, message.length()-1);

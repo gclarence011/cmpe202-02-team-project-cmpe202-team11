@@ -48,7 +48,8 @@ public class ChatService {
         }
     }
 
-    public List<Chat> getChats(){//TODO change to only return ones user is involved with
-        return chatRepository.findAll();
+    public List<Chat> getChats(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException( "User not found"));
+        return chatRepository.findBySenderOrReceiver(user,user);
     }
 }

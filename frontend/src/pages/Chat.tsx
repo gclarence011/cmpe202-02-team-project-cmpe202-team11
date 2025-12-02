@@ -42,16 +42,16 @@ export default function Chat() {
 
   useEffect(() => {
     api.get(routes.chats.list)
-      //.then((resp) => console.log(resp.data));
-
       .then((resp) => {
-        /* const sorted = resp.data.sort((a: Message, b: Message) =>
+        const sorted = resp.data.sort((a: Message, b: Message) =>
           new Date(b.time).getTime() - new Date(a.time).getTime()
-        ); */
-        //setMessages(sorted);
-        setMessages(resp.data);
+        );
+        console.log(sorted);
+        setMessages(sorted);
+        //console.log(resp.data);
+        //setMessages(resp.data);
       });
-  }, []);
+  }, [composeOpen]);
 
   const sendMessage = () => {
     api.post(routes.chats.list, {
@@ -81,8 +81,8 @@ export default function Chat() {
             onClick={() => setExpandedId(expandedId === msg.id ? null : msg.id)}
           >
             <CardContent className="p-4">
-              <div className="font-semibold text-xl">{msg.sender.name}</div>
-              <div className="font-semibold text-xl">{msg.receiver.name}</div>
+              <div className="font-semibold text-xl">To: {msg.receiver.name}</div>
+              <div className="font-semibold text-xl">From: {msg.sender.name}</div>
               <div className="text-sm opacity-70">{msg.time}</div>
               <div className="mt-2 font-medium">Listing: {msg.listing.title}</div>
 
@@ -115,34 +115,11 @@ export default function Chat() {
           animate={{ opacity: 1, y: 0 }}
           className="fixed inset-0 bg-black/50 flex justify-center items-center p-4"
         >
-          <Card className="max-w-lg w-full">
+          <Card className="max-w-lg w-full bg-white">
             <CardContent className="p-6 grid gap-4">
               <h2 className="text-2xl font-bold">Compose Message</h2>
 
               <div>
-                <label className="font-semibold">Recipient</label>
-                <input
-                  className="w-full p-2 border rounded-xl"
-                  value={composeData.recipient}
-                  onChange={(e) =>
-                    setComposeData({ ...composeData, recipient: e.target.value })
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="font-semibold">Listing</label>
-                <input
-                  className="w-full p-2 border rounded-xl"
-                  value={composeData.listing}
-                  onChange={(e) =>
-                    setComposeData({ ...composeData, listing: e.target.value })
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="font-semibold">Message</label>
                 <textarea
                   className="w-full p-2 border rounded-xl"
                   rows={4}

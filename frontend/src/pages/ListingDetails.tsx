@@ -8,13 +8,12 @@ import "swiper/css/navigation";
 
 import placeholder from "../assets/default-item.png";
 
-type User = {name?:string}
+type User = {name?:string, id?: string}
 
 type Listing = { id:string; title:string; price:number; description?:string; photos?:string[]; seller?:User; };
 
 export default function ListingDetails(){
   const { id } = useParams<{id:string}>();
-  const { ownerId } = useParams<{ownerId:string}>();
   const [item,setItem]=useState<Listing|null>(null);
   const [loading,setLoading]=useState(true);
   const [msg,setMsg]=useState<string>("");
@@ -28,7 +27,7 @@ export default function ListingDetails(){
     finally{ setLoading(false); }
   })(); },[id]);
 
-  async function startChat(){
+  async function startChat(ownerId:string){
     if(!id) return;
     console.log(ownerId, id);
     navigate("/chats", {
@@ -91,9 +90,9 @@ export default function ListingDetails(){
         <p className="text-xl">{"Seller: " + item.seller?.name}</p>
         <p className="text-xl">{"Description: "}</p>
         <p className="text-gray-700">{item.description}</p>
-        {msg && <div className="text-sm text-green-600">{msg}</div>}
+        <div className="text-xl">Seller: {item.seller?.name||""}</div>
         <div className="flex gap-2">
-          <button onClick={startChat} className="rounded-lg px-3 py-2 border bg-black text-white">Chat with Seller</button>
+        <button onClick={()=>startChat(item.seller?.id||"")} className="rounded-lg px-3 py-2 border bg-black text-white">Chat with Seller</button>
           <button onClick={markReport} className="rounded-lg px-3 py-2 border">Report</button>
         </div>
       </div>

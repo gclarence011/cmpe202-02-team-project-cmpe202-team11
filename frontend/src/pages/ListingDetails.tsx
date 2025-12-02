@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api, routes } from "@/lib/api";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 
 import placeholder from "../assets/default-item.png";
 
@@ -12,10 +16,14 @@ export default function ListingDetails(){
   const { id } = useParams<{id:string}>();
   const [item,setItem]=useState<Listing|null>(null);
   const [loading,setLoading]=useState(true);
+  const [msg,setMsg]=useState<string>("");
   const navigate = useNavigate();
 
   useEffect(()=>{ (async()=>{
-    try{ const r = await api.get(routes.listings.detail(id!)); setItem(r.data); }
+    try{ 
+      const r = await api.get(routes.listings.detail(id!)); 
+      setItem(r.data); 
+    }
     finally{ setLoading(false); }
   })(); },[id]);
 
@@ -35,8 +43,13 @@ export default function ListingDetails(){
 
   async function markReport(){
     if(!id) return;
-    await api.patch(routes.listings.markSold(id)); 
-    navigate("/");
+    // Simplified: send a report without reason and show inline confirmation (no prompts)
+    try{
+      await api.post(routes.listings.report(id), {});
+      setMsg('Report submitted — thank you.');
+    }catch(err:any){
+      setMsg(err?.response?.data || err.message || 'Failed to submit report');
+    }
   }
 
   if(loading) return <p>Loading...</p>;
@@ -44,10 +57,38 @@ export default function ListingDetails(){
 
   return (
     <section className="grid md:grid-cols-2 gap-6">
-      <img src={item.photos?.[0]|| placeholder}alt={item.title} className="w-full aspect-square object-cover bg-gray-100 rounded-2xl"/>
+      <Swiper
+        modules={[Navigation]}
+        navigation
+        spaceBetween={10}
+        slidesPerView={1}
+        className="w-full aspect-square rounded-2xl"
+      >
+        {item.photos?.length ? (
+          item.photos.map((p, i) => (
+            <SwiperSlide key={i}>
+              <img
+                src={p}
+                alt={item.title}
+                className="w-full h-full object-cover rounded-2xl bg-gray-100"
+              />
+            </SwiperSlide>
+          ))
+        ) : (
+          <SwiperSlide>
+            <img
+              src={placeholder}
+              alt="placeholder"
+              className="w-full h-full object-cover rounded-2xl bg-gray-100"
+            />
+          </SwiperSlide>
+        )}
+      </Swiper>
       <div className="space-y-3">
         <h2 className="text-2xl font-semibold">{item.title}</h2>
         <div className="text-xl">${item.price?.toFixed(2)}</div>
+        <p className="text-xl">{"Seller: " + item.seller?.name}</p>
+        <p className="text-xl">{"Description: "}</p>
         <p className="text-gray-700">{item.description}</p>
         <div className="text-xl">Seller: {item.seller?.name||""}</div>
         <div className="flex gap-2">

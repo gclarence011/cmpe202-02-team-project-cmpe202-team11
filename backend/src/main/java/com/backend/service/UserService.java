@@ -3,6 +3,7 @@ package com.backend.service;
 import org.springframework.stereotype.Service;
 
 import com.backend.repository.UserRepository;
+import com.backend.model.Role;
 import com.backend.model.User;
 
 @Service
@@ -22,6 +23,11 @@ public class UserService {
   public Long getUserId(String CogId){
     User user = userRepository.findByCogId(CogId);
     return user.getID();
+  }
+
+  public boolean isAdmin(String CogId){
+    User user = userRepository.findByCogId(CogId);
+    return user.getRole() == Role.ADMIN;
   }
   
 }

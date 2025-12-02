@@ -11,7 +11,7 @@ const API_BASE = (typeof window !== "undefined" && window.__ENV?.API_BASE_URL) |
 export const api = axios.create({ baseURL: API_BASE.replace(/\/$/, ""), timeout: 15000 });
 
 export const routes = {
-  auth: { signup:"/auth/signup", login:"/auth/login", logout:"/auth/logout", me:"/auth/me", refresh:"/auth/refresh" }, // Not implemented
+  auth: { signup:"/auth/signup", login:"/auth/login", logout:"/auth/logout", me:"/auth/me", refresh:"/auth/refresh" , isAdmin:"admin/isAdmin"},
   listings: { mylist:"api/listings/user", list:"api/listings/search", detail:(id:string)=>`api/listings/${id}`, create:"api/listings/create", update:(id:string)=>`api/listings/${id}`, upload:(id:string)=>`api/listings/${id}/upload`, remove:(id:string)=>`api/listings/delete/${id}`, markSold:(id:string)=>`/listings/${id}/mark`, report:(id:string)=>`api/listings/${id}/report`, flag:(id:string)=>`api/listings/${id}/flag`, unflag:(id:string)=>`api/listings/${id}/unflag` },
   chats: { list:"/chats"/*, start:(listingId:string)=>`/chats/listing/${listingId}`, send:`/chats`*/ }
 } as const;

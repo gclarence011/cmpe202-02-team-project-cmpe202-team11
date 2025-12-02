@@ -96,7 +96,7 @@ export default function Chat() {
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setComposeData({ recipient: msg.sender.id, listing: msg.listing.id, message: "" });
+                      setComposeData({ recipient: msg.receiver.id, listing: msg.listing.id, message: "" });
                       setComposeOpen(true);
                     }}
                   >

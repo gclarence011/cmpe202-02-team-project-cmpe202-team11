@@ -34,8 +34,24 @@ public class ReportController {
       return ResponseEntity.badRequest().body(e.getMessage());
     } catch (Exception e){
       return ResponseEntity.internalServerError().body("An unexpected error occured" + e.getMessage());
-    }
-  }	@GetMapping("admin/reports")
+		}
+  }	
+	
+	@GetMapping("admin/isAdmin")
+	public ResponseEntity<?> validateAdmin(@AuthenticationPrincipal Jwt jwt){
+		try{
+			if (jwt == null) return ResponseEntity.status(401).body("Authentication required");
+			String cog = jwt.getClaim("sub");
+			boolean check = userService.isAdmin(cog);
+			return ResponseEntity.ok(check);
+		} catch (IllegalArgumentException e){
+			return ResponseEntity.badRequest().body(e.getMessage());
+		} catch (Exception e){
+			return ResponseEntity.internalServerError().body("An unexpected error occured" + e.getMessage());
+		}
+	}
+	
+	@GetMapping("admin/reports")
 	public ResponseEntity<?> getReports(@AuthenticationPrincipal Jwt jwt){
 		try{
 			if (jwt == null) return ResponseEntity.status(401).body("Authentication required");
@@ -49,5 +65,6 @@ public class ReportController {
 			return ResponseEntity.internalServerError().body("An unexpected error occured" + e.getMessage());
 		}
 	}
+	
 
 }

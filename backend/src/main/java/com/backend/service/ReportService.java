@@ -38,10 +38,12 @@ public class ReportService {
 		if (admin.getRole() != Role.ADMIN) {
 			throw new IllegalArgumentException("Only Admin can view reports");
 		}
+			System.out.println("authed");
 			List<Report> reports = reportRepository.findAllByOrderByCreatedAtDesc();
 			List<Map<String,Object>> out = new ArrayList<>();
 			// Keep track of listing IDs we've included already
 			Set<Long> includedListingIds = new HashSet<>();
+			System.out.println("report size: " + reports.size());
 
 			// Add actual reports first
 			for (Report r : reports){

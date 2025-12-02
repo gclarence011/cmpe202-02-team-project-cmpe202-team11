@@ -5,11 +5,8 @@ import ListingCard from "@/components/ListingCard";
 type Report = { id:string; listingId:string; reason?:string; listingStatus?:string; listingTitle?:string; };
 
 export default function AdminDashboard(){
-  const [stats,setStats]=useState<any>(null);
   const [reports,setReports] = useState<Report[]>([]);
-  const [listingMap, setListingMap] = useState<Record<string, any>>({});
-
-  useEffect(()=>{ (async()=>{ try{ const r = await api.get('/admin/stats'); setStats(r.data); }catch{ setStats({ users:0, listings:0, chats:0 }); } })(); },[]);
+  const [listingMap, setListingMap] = useState<Record<string, any>>({})
 
   async function loadReports(){
     try{
@@ -41,9 +38,6 @@ export default function AdminDashboard(){
     <section className="space-y-3">
       <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
       <div className="grid sm:grid-cols-5 gap-3">
-        <div className="border rounded-2xl p-4"><div className="text-gray-500 text-sm">Users</div><div className="text-2xl">{stats?.users ?? '-'}</div></div>
-        <div className="border rounded-2xl p-4"><div className="text-gray-500 text-sm">Listings</div><div className="text-2xl">{stats?.listings ?? '-'}</div></div>
-        <div className="border rounded-2xl p-4"><div className="text-gray-500 text-sm">Chats</div><div className="text-2xl">{stats?.chats ?? '-'}</div></div>
         <div className="border rounded-2xl p-4 bg-orange-50"><div className="text-gray-500 text-sm">Reported</div><div className="text-2xl">{(() => {
           const flaggedSet = new Set<string>();
           const reportedMap: Record<string, Report[]> = {};

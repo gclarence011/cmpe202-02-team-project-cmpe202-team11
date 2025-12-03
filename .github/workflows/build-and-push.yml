@@ -35,7 +35,7 @@ jobs:
           # Build image for ARM64 only and push
           docker buildx build \
             --platform linux/arm64 \
-            -t $ECR_REPOSITORY:latest \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             -f Dockerfile . \
             --push
           docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

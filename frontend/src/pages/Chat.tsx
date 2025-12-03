@@ -67,6 +67,9 @@ export default function Chat() {
       console.log(resp.data)
       setComposeOpen(false);
       setComposeData({ recipient: "", listing: "", message: "" });
+    }).catch((err) => {
+      console.error("Backend Error: ", err)
+      setComposeOpen(false);
     });
   };
 
@@ -96,7 +99,7 @@ export default function Chat() {
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setComposeData({ recipient: msg.receiver.id, listing: msg.listing.id, message: "" });
+                      setComposeData({ recipient: msg.sender.id, listing: msg.listing.id, message: "" });
                       setComposeOpen(true);
                     }}
                   >

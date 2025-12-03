@@ -29,9 +29,15 @@ public class ChatService {
     }
 
     public Chat createChat(long senderId, long receiverId, long listingId, String content){
+
+        if (senderId == receiverId) {
+            throw new IllegalArgumentException("Cannot send msg to self");
+        }
+        
         User sender = userRepository.findById(senderId).orElseThrow(() -> new IllegalArgumentException( "Sender not found"));
         User receiver = userRepository.findById(receiverId).orElseThrow(() -> new IllegalArgumentException( "Receiver not found"));
         Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException( "Listing not found"));
+        
         Chat chat = new Chat();
         chat.setTime(LocalDateTime.now());
         chat.setSender(sender);

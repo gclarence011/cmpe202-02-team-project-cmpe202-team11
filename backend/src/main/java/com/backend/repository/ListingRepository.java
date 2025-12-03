@@ -58,6 +58,9 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
       @Param("minPrice") Double minPrice,
       @Param("maxPrice") Double maxPrice,
       @Param("category") Category category);
+
+  // Find listings by status (e.g., FLAGED)
+  List<Listing> findAllByStatus(com.backend.model.Status status);
   
   @Query("SELECT l FROM Listing l WHERE l.status = 'OPEN'")
   List<Listing> findAllActive();

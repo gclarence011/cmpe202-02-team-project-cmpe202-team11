@@ -30,6 +30,13 @@ jobs:
           IMAGE_TAG: latest
         run: |
           cd backend
-          docker build -t $ECR_REPOSITORY -f Dockerfile .
+          # Build multi-arch image (amd64 + arm64)
+          docker buildx create --use
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            -t $ECR_REPOSITORY:latest \
+            -f Dockerfile . \
+            --push
+          # Tag for ECR
           docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

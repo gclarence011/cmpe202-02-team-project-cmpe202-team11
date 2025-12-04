@@ -38,6 +38,9 @@ Asim Mohammed
 - Improved frontend structure, components, and UI, while resolving multiple API integration issues.
 - Set up Docker configurations and helped connect frontend listing workflows.
 
+# UI Wireframe
+https://www.figma.com/design/5bYsmo7ocyj2EiRo6ix8Fj/Untitled?node-id=0-1&p=f
+
 # Scrum Manager
 - https://docs.google.com/spreadsheets/d/1HfVKEmBjztNtblDBRnfNRHagL97_EXRULnCIfn5pPmA/edit?gid=1742583490#gid=1742583490  
 # Project Folder  

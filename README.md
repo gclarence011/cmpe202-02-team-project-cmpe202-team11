@@ -18,8 +18,8 @@ Gabriel Clarence
 
 Kareema Kilani
 
-- AI NLP Search Service
-- Report System
+- AI NLP Search Service Backend and Frontend
+- Report System Backend and Frontend
 - Created DB in Amazon RDS with Mock Data, however DB structure had multipe iterations with Gabriel.
   
 Asim Mohammed

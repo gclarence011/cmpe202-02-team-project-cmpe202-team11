@@ -33,7 +33,10 @@ Kareema Kilani
 - Created DB in Amazon RDS with Mock Data, however DB structure had multipe iterations with Gabriel.
   
 Asim Mohammed
-- Add Here
+- Built frontend pages including Browse, My Listings, Create Listing, Edit Listing, and Listing Details.
+- Created the architecture diagram and component diagram used for project documentation.
+- Improved frontend structure, components, and UI, while resolving multiple API integration issues.
+- Set up Docker configurations and helped connect frontend listing workflows.
 
 # Scrum Manager
 - https://docs.google.com/spreadsheets/d/1HfVKEmBjztNtblDBRnfNRHagL97_EXRULnCIfn5pPmA/edit?gid=1742583490#gid=1742583490  

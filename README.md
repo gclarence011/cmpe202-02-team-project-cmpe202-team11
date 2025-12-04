@@ -14,7 +14,13 @@ Ryan Ayoubi
 - Add Here
   
 Gabriel Clarence
-- Add Here
+- Managed the Scrum Manager Doc
+- Listings backend and interating frontend with it
+	- Create, edit, delete
+	- Upload image into S3 
+	- Search by filter
+- Merging branches to main
+- Deploy backend in EC2 and frontend in amplify. 
 
 Kareema Kilani
 

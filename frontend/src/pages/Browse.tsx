@@ -180,21 +180,6 @@ export default function Browse() {
 
   return (
     <div className="space-y-8">
-      {/* Hero */}
-      <div className="rounded-2xl bg-gradient-to-r from-gray-900 to-gray-700 text-white p-6">
-        <h1 className="text-2xl md:text-3xl font-bold">Marketplace</h1>
-        <p className="text-white/80 mt-1">
-          Buy & sell with classmates. Safe, local, and fast.
-        </p>
-        <div className="mt-4">
-          <a
-            href="/create"
-            className="inline-flex items-center gap-2 rounded-lg bg-white text-gray-900 px-4 py-2 font-medium hover:bg-gray-100 transition"
-          >
-            + Create Listing
-          </a>
-        </div>
-      </div>
 
       {/* Filters */}
       <div className="bg-white border rounded-2xl p-4 shadow-sm">
@@ -256,15 +241,8 @@ export default function Browse() {
       {!nlpResults && (
         <>
           <Section
-            title="Featured picks"
-            items={items.slice(0, 4)}
-            loading={loading}
-          />
-
-          {/* Trending */}
-          <Section
-            title="Trending near you"
-            items={items.slice(4, 12)}
+            title=""
+            items={items.slice(4, 24)}
             loading={loading}
           />
         </>

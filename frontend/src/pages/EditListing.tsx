@@ -101,7 +101,7 @@ export default function EditListing(){
         photos: previews   // send list of URL strings
       });
 
-      navigate(`/listings/${id}/edit`);
+      navigate(`/mylistings`);
     }catch(err:any){
       console.error(err);
       setMsg(err?.response?.data?.message || err.message || "Failed to edit listing");
@@ -194,8 +194,8 @@ export default function EditListing(){
               >
                 <option value="">Select category</option>
                 <option value="ELECTRONICS">Electronics</option>
-                <option value="BOOKS">Furniture</option>
-                <option value="FURNITURE">Vehicles</option>
+                <option value="BOOKS">Books</option>
+                <option value="FURNITURE">Furniture</option>
                 <option value="other">Other</option>
               </select>
             </div>

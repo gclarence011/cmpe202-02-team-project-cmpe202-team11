@@ -90,7 +90,7 @@ export default function ListingDetails(){
         <p className="text-xl">{"Seller: " + item.seller?.name}</p>
         <p className="text-xl">{"Description: "}</p>
         <p className="text-gray-700">{item.description}</p>
-        <div className="text-xl">Seller: {item.seller?.name||""}</div>
+        <p className="text-sm text-green-600">{msg}</p>
         <div className="flex gap-2">
           <button onClick={()=>startChat(item.seller?.id||"")} className="rounded-lg px-3 py-2 border bg-black text-white">Chat with Seller</button>
           <button onClick={markReport} className="rounded-lg px-3 py-2 border">Report</button>

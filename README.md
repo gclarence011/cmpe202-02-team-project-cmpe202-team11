@@ -34,7 +34,7 @@ Kareema Kilani
   
 Asim Mohammed
 - Built frontend pages including Browse, My Listings, Create Listing, Edit Listing, and Listing Details.
-- Created the architecture diagram and component diagram used for project documentation.
+- Created the architecture diagram and component,deployment diagram used for project documentation.
 - Improved frontend structure, components, and UI, while resolving multiple API integration issues.
 - Set up Docker configurations and helped connect frontend listing workflows.
 

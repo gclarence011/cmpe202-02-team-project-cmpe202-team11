@@ -4,10 +4,10 @@
 Team-11
 
 ## Team Members 
-Ryan Ayoubi
-Gabriel Clarence
-Kareema Kilani
-Asim Mohammed
+- Ryan Ayoubi
+- Gabriel Clarence
+- Kareema Kilani
+- Asim Mohammed
 
 ## Summary of Contribution Areas
 Ryan Ayoubi

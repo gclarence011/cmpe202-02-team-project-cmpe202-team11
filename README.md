@@ -11,9 +11,11 @@ Asim Mohammed
 
 ## Summary of Contribution Areas
 Ryan Ayoubi
-- 
+- Add Here
+  
 Gabriel Clarence
--
+- Add Here
+
 Kareema Kilani
 
 - AI NLP Search Service
@@ -21,7 +23,7 @@ Kareema Kilani
 - Created DB in Amazon RDS with Mock Data, however DB structure had multipe iterations with Gabriel.
   
 Asim Mohammed
--
+- Add Here
 
 # Scrum Manager
 - https://docs.google.com/spreadsheets/d/1HfVKEmBjztNtblDBRnfNRHagL97_EXRULnCIfn5pPmA/edit?gid=1742583490#gid=1742583490  

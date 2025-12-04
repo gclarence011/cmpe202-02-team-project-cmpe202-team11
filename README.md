@@ -11,7 +11,10 @@ Team-11
 
 ## Summary of Contribution Areas
 Ryan Ayoubi
-- Add Here
+- Wireframe
+- Initial ERD
+- IAM
+- Chats
   
 Gabriel Clarence
 - Managed the Scrum Manager Doc

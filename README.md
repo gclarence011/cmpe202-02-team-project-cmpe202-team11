@@ -47,9 +47,13 @@ XP Values
 - Feedback was a key value on our team especially during two cases. During the wireframe and frontend building, the team realized that there was some difference in user flow and we were able to resolve this by communicating that time was a valuable part of each member’s work and feedback about features helps us save time. During our stand up, we were very open about communicating any differences to ensure we were all on the same page. This also came up when a team member finished both the back and front end of the report system but got feedback from another team member that the requirements of the project allowed only admin to disable listings; however, in that implementation users could disable listings, which was a key part of the requirements. This open-form communication made it easy for the team to grow on each other's work. During our stands we continuously communicated feedback to each other to ensure we were adjusting features and catching errors quickly.
 
 # Scrum Manager
-- https://docs.google.com/spreadsheets/d/1HfVKEmBjztNtblDBRnfNRHagL97_EXRULnCIfn5pPmA/edit?gid=1742583490#gid=1742583490  
+- https://docs.google.com/spreadsheets/d/1HfVKEmBjztNtblDBRnfNRHagL97_EXRULnCIfn5pPmA/edit?gid=1742583490#gid=1742583490
+  
 # Project Folder  
 - https://drive.google.com/drive/folders/0AAV4cqDMeHrtUk9PVA?dmr=1&ec=wgc-drive-hero-goto
+
+# Diagrams
+- Please refer to Diagrams folder in repo
 
 # How to run the app:
 # Backend

@@ -39,7 +39,12 @@ Asim Mohammed
 - Set up Docker configurations and helped connect frontend listing workflows.
 
 # UI Wireframe
-https://www.figma.com/design/5bYsmo7ocyj2EiRo6ix8Fj/Untitled?node-id=0-1&p=f
+- https://www.figma.com/design/5bYsmo7ocyj2EiRo6ix8Fj/Untitled?node-id=0-1&p=f
+
+XP Values 
+- Simplicity was a key value in our team. It is apparent in our front end and backend that we didn't want to over engineer any features until all core features were implemented. In addition, during our task distribution and sprint planning we implemented simplicity value to ensure when problems occur such as integration with frontend and backend. With key functionality, a team member was assigned a core feature and they would own that feature and push to a branch so testing can occur with other team members and only pushed to main when everything was fully working and this helped to ensure avoiding bugs and creating blockers.
+
+- Feedback
 
 # Scrum Manager
 - https://docs.google.com/spreadsheets/d/1HfVKEmBjztNtblDBRnfNRHagL97_EXRULnCIfn5pPmA/edit?gid=1742583490#gid=1742583490  
